@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Environment Variables
+.env
+
+# Alembic cache
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite3
+
+# Bytecode
+*.pyo
+
+# Coverage
+.coverage
+htmlcov/
+
+# Misc
+*.egg-info/
+
+# Excel
+*.xlsx
+*.xls
