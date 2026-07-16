@@ -15,14 +15,26 @@ from app.schemas.model import ModelUpdate
 from app.crud.models import get_model_with_full_details
 from app.models.product_group import ProductGroup
 from app.models.models import MovementType, OrderStatus
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+    INVENTORY_ADJUST ,
+    INVENTORY_CREATE,
+    INVENTORY_DELETE ,
+    INVENTORY_UPDATE,
+    INVENTORY_VIEW,
+)
+from app.models.users import User
 
 router = APIRouter()
 
 @router.post("/movement")
-def create_movement(payload: StockMovementCreate, db: Session = Depends(get_db)):
+def create_movement(payload: StockMovementCreate,  current_user: User = Depends(
+    require_permission(INVENTORY_CREATE)
+    ),
+db: Session = Depends(get_db)):
     
     # 1. Look up the product model by the number sent from the React UI
-    product_model = db.query(Model).filter(Model.model_no == payload.model_no).first()
+    product_model = db.query(Model).filter(  Model.model_no == payload.model_no).first()
     
     # If the user typed an invalid model number, throw a clear 404 error
     if not product_model:
@@ -60,7 +72,10 @@ def create_movement(payload: StockMovementCreate, db: Session = Depends(get_db))
 
 
 @router.get("/model/{model_id}/stock", response_model=dict)
-def fetch_model_stock(model_id: int, db: Session = Depends(get_db)):
+def fetch_model_stock(model_id: int, current_user: User = Depends(
+    require_permission(INVENTORY_VIEW)
+    ),
+db: Session = Depends(get_db)):
     """
     Returns the calculated current available stock units for a specific model ID.
     """
@@ -82,8 +97,11 @@ def get_inventory_summary(
     limit: int = Query(50, ge=1, le=200),
     search: Optional[str] = Query(None),
     product_group_id: Optional[int] = Query(None),
-    db: Session = Depends(get_db),
-):
+   current_user: User = Depends(
+    require_permission(INVENTORY_VIEW)
+    ),
+db: Session = Depends(get_db)):
+
     """Get paginated inventory summary"""
     return get_inventory_summary_paginated(
         db=db, 
@@ -94,7 +112,10 @@ def get_inventory_summary(
     )
 
 @router.put("/model/{model_id}", response_model=ModelResponse)
-def update_model_details(model_id: int, update_data: ModelUpdate, db: Session = Depends(get_db)):
+def update_model_details(model_id: int, update_data: ModelUpdate, current_user: User = Depends(
+    require_permission(INVENTORY_VIEW)
+    ),
+db: Session = Depends(get_db)):
     """
     Updates catalog model parameters while maintaining nested relationship
     integrity and recalculating real-time stock balances safely.
@@ -149,7 +170,10 @@ def update_model_details(model_id: int, update_data: ModelUpdate, db: Session = 
         )
 
 @router.post("/bulk-movement")
-def create_bulk_movements(payload: List[StockMovementCreate], db: Session = Depends(get_db)):
+def create_bulk_movements(payload: List[StockMovementCreate], current_user: User = Depends(
+    require_permission(INVENTORY_ADJUST)
+    ),
+db: Session = Depends(get_db)):
     """
     Accepts an array of ledger entry rows straight from our Excel front-end grid workspace,
     processes them individually, handles SKU or Model matching, and commits them all securely.
@@ -193,7 +217,10 @@ def search_models(
      q: Optional[str] = Query(None, min_length=1),
     limit: int = Query(20, ge=1, le=50),
     product_group_id: Optional[int] = None,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(INVENTORY_VIEW)
+    ),
+db: Session = Depends(get_db)
 ):
     """Search models by name, SKU, or description"""
     query = db.query(Model)

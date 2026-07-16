@@ -14,12 +14,23 @@ from app.schemas.product_group import (
 )
 from app.crud import product_group as crud_pg
 from app.api.deps import get_current_user
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+   PRODUCT_GROUP_VIEW ,
+PRODUCT_GROUP_CREATE ,
+PRODUCT_GROUP_UPDATE,
+PRODUCT_GROUP_DELETE,
+)
+from app.models.users import User
 
 router = APIRouter(prefix="/product-groups", tags=["Product Groups"])
 
 # 1. CREATE: Create a new Product Group
 @router.post("/", response_model=ProductGroupResponse, status_code=status.HTTP_201_CREATED)
-def create_pg(payload: ProductGroupCreate, db: Session = Depends(get_db),user=Depends(get_current_user)):
+def create_pg(payload: ProductGroupCreate, current_user: User = Depends(
+    require_permission(PRODUCT_GROUP_CREATE)
+    ),
+db: Session = Depends(get_db),user=Depends(get_current_user)):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admins only")
     # RELATIONAL CHECK: Ensure the Manufacturer exists
@@ -38,7 +49,10 @@ def create_pg(payload: ProductGroupCreate, db: Session = Depends(get_db),user=De
 def read_pgs(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(PRODUCT_GROUP_VIEW)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     items = crud_pg.get_product_groups(db, skip=skip, limit=limit)
@@ -54,7 +68,10 @@ def read_pgs(
 
 # 3. READ: Get all groups for a specific Manufacturer
 @router.get("/by-manufacturer/{mfr_id}", response_model=List[ProductGroupResponse])
-def read_pgs_by_mfr(mfr_id: int, db: Session = Depends(get_db),user=Depends(get_current_user)):
+def read_pgs_by_mfr(mfr_id: int, current_user: User = Depends(
+    require_permission(PRODUCT_GROUP_VIEW)
+    ),
+db: Session = Depends(get_db),user=Depends(get_current_user)):
     # Check if manufacturer exists first
     mfr = db.query(Manufacturer).filter(Manufacturer.id == mfr_id).first()
     if not mfr:
@@ -65,7 +82,10 @@ def read_pgs_by_mfr(mfr_id: int, db: Session = Depends(get_db),user=Depends(get_
 
 # 4. DELETE: Remove a group
 @router.delete("/{pg_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_pg(pg_id: int, db: Session = Depends(get_db),user=Depends(get_current_user)):
+def delete_pg(pg_id: int, current_user: User = Depends(
+    require_permission(PRODUCT_GROUP_DELETE)
+    ),
+db: Session = Depends(get_db),user=Depends(get_current_user)):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admins only")
     success = crud_pg.delete_product_group(db, productgroup_id=pg_id)
@@ -78,7 +98,10 @@ def delete_pg(pg_id: int, db: Session = Depends(get_db),user=Depends(get_current
 def update_pg(
     pg_id: int, 
     payload: ProductGroupUpdate, 
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(PRODUCT_GROUP_UPDATE)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     if user.role != "admin":
@@ -103,7 +126,10 @@ def update_pg(
 
 # 6. READ: Get a single Product Group by ID
 @router.get("/{pg_id}", response_model=ProductGroupResponse)
-def read_product_group(pg_id: int, db: Session = Depends(get_db),user=Depends(get_current_user)):
+def read_product_group(pg_id: int,current_user: User = Depends(
+    require_permission(PRODUCT_GROUP_VIEW)
+    ),
+db: Session = Depends(get_db),user=Depends(get_current_user)):
     # Use joinedload to bring the Manufacturer details in one SQL query
     db_pg = db.query(ProductGroup)\
         .options(joinedload(ProductGroup.manufacturer))\

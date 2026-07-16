@@ -270,8 +270,9 @@ useEffect(() => {
                   <thead>
                     <tr className="bg-gray-100 border-b border-gray-200 font-bold text-gray-700 uppercase text-[10px]">
                       <th className="p-3">Model Details</th>
-                      <th className="p-3">Barcode (SKU)</th>
-                      <th className="p-3">Price</th>
+                      <th className="p-3">Product_Group</th>
+                      <th className="p-3">MAKE</th>
+                      <th className="p-3">Pdirice</th>
                       <th className="p-3 text-center w-36">Stock Balance</th>
                     </tr>
                   </thead>
@@ -292,7 +293,10 @@ useEffect(() => {
                             </p>
                           </td>
                           <td className="p-3 font-mono text-gray-500">
-                            {item.sku || "—"}
+                            {item.product_group || "—"}
+                          </td>
+                          <td className="p-3 font-mono text-gray-500">
+                            {item.manufacturer || "—"}
                           </td>
                           <td className="p-3 font-semibold">₹{item.price}</td>
                           <td className="p-3 text-center">

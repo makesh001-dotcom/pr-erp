@@ -20,55 +20,54 @@ const MainLayout = () => {
       
       {/* SIDEBAR */}
       {/* SIDEBAR - Fixed height, independently scrollable */}
-<aside className="w-20 bg-indigo-700 flex flex-col h-screen sticky top-0 print:hidden">
+<aside className="w-64 bg-indigo-700 flex flex-col h-screen sticky top-0 print:hidden text-white">
   
-  {/* Logo - Fixed at top */}
-  <div className="py-6 flex justify-center">
-    <div className="text-white p-3 bg-indigo-600 rounded-xl shadow-inner">
+  {/* Logo - Updated to flex-row and start-aligned */}
+  <div className="py-6 px-6 flex items-center space-x-3 border-b border-indigo-600/50">
+    <div className="p-2.5 bg-indigo-600 rounded-xl shadow-inner flex-shrink-0">
       <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
     </div>
+    <span className="font-bold text-lg tracking-wide">PR AUTOMATION</span>
   </div>
 
-  {/* Navigation - Scrollable */}
-  <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 space-y-6 scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-transparent">
+  {/* Navigation - Padding updated for row elements */}
+  <nav className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 space-y-2 scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-transparent">
     
     {/* Main */}
-    <SidebarIcon to="/dashboard" icon="📊" label="Dash" active={isActive('/dashboard')} />
-    {/*<SidebarIcon to="/analytics" icon="📈" label="Analytics" active={isActive('/analytics')} />*/}
+    <SidebarIcon to="/dashboard" icon="📊" label="Dashboard" active={isActive('/dashboard')} />
     
     <Divider />
     
     {/* Transactions */}
     <SidebarIcon to="/purchases" icon="📥" label="Purchases" active={isActive('/purchases')} />
     <SidebarIcon to="/sales" icon="📤" label="Sales" active={isActive('/sales')} />
-    <SidebarIcon to="/demo-tracking" icon="🔍" label="Demo" active={isActive('/demo-tracking')} />
-    <SidebarIcon to="/quotation" icon="🧾" label="Quotation" active={isActive('/quotation')} />
+    <SidebarIcon to="/demo-tracking" icon="🔍" label="Demo Tracking" active={isActive('/demo-tracking')} />
+    <SidebarIcon to="/quotation" icon="🧾" label="Quotations" active={isActive('/quotation')} />
     
     <Divider />
     
     {/* Master Data */}
     <SidebarIcon to="/suppliers" icon="🏢" label="Suppliers" active={isActive('/suppliers')} />
-    {/*<SidebarIcon to="/models" icon="📋" label="Models" active={isActive('/models')} />*/}
-    <SidebarIcon to="/manufacturers" icon="🏭" label="Mfrs" active={isActive('/manufacturers')} />
+    <SidebarIcon to="/manufacturers" icon="🏭" label="Manufacturers" active={isActive('/manufacturers')} />
     
     <Divider />
     
     {/* Stock */}
     <SidebarIcon to="/inventory" icon="🏪" label="Inventory" active={isActive('/inventory')} />
-    <SidebarIcon to="/AuditLogPage" icon="📝" label="AuditLogPage" active={isActive('/AuditLogPage')} />
+    <SidebarIcon to="/AuditLogPage" icon="📝" label="Audit Logs" active={isActive('/AuditLogPage')} />
     
-    {/* Extra padding at bottom for scroll comfort */}
     <div className="pb-4" />
     
   </nav>
 
-  {/* Logout - Fixed at bottom */}
-  <div className="py-4 border-t border-indigo-600 flex justify-center">
+  {/* Logout - Transformed into a full-width clickable button */}
+  <div className="p-4 border-t border-indigo-600">
     <button 
       onClick={handleLogout} 
-      className="text-indigo-200 hover:text-white transition text-xs font-medium"
+      className="w-full flex items-center justify-center space-x-2 bg-indigo-600/50 hover:bg-indigo-600 px-4 py-2.5 rounded-xl transition text-sm font-medium text-indigo-100 hover:text-white"
     >
-       Logout
+      <span>🚪</span>
+      <span>Log Out</span>
     </button>
   </div>
   
@@ -105,8 +104,8 @@ const MainLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-8 bg-gray-50 print:bg-white print:p-0 print:overflow-visible">
-          <div className="max-w-7xl mx-auto print:max-w-full print:p-0">
+       <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-gray-50 print:bg-white print:p-0 print:overflow-visible">
+          <div className="w-full print:p-0">
             <Outlet />
           </div>
         </main>
@@ -117,23 +116,23 @@ const MainLayout = () => {
 };
 
 // Sidebar Icon Component
-const SidebarIcon = ({ to, icon, label, active }) => (
-  <Link to={to} className="group relative flex flex-col items-center w-full">
-    <div className={`p-3 rounded-xl transition-all duration-200 ${
-      active 
-        ? 'bg-white text-indigo-700 shadow-lg scale-110' 
-        : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
-    }`}>
-      <span className="text-2xl">{icon}</span>
-    </div>
-    <span className="text-[10px] mt-1 font-medium text-indigo-300 opacity-100">
-      {label}
-    </span>
-    {active && (
-      <div className="absolute right-0 top-1/4 h-1/2 w-1 bg-white rounded-l-full" />
-    )}
-  </Link>
-);
+const SidebarIcon = ({ to, icon, label, active }) => {
+  return (
+    <Link
+      to={to}
+      className={`w-full flex items-center space-x-4 px-4 py-3 rounded-xl transition-all duration-200 group text-sm font-medium
+        ${active 
+          ? 'bg-white text-indigo-700 shadow-md' 
+          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
+        }`}
+    >
+      <span className="text-xl flex-shrink-0 group-hover:scale-110 transition-transform">
+        {icon}
+      </span>
+      <span className="truncate">{label}</span>
+    </Link>
+  );
+};
 
 // Divider Component
 const Divider = () => (

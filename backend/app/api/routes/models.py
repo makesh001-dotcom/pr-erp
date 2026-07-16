@@ -14,12 +14,24 @@ from app.schemas.model import (
 )
 from app.crud import models as crud_models 
 from app.api.deps import get_current_user
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+   
+MODEL_VIEW ,
+MODEL_CREATE ,
+MODEL_UPDATE ,
+MODEL_DELETE ,
+)
+from app.models.users import User
 
 router = APIRouter(prefix="/models", tags=["Models"])
 
 # 1. CREATE
 @router.post("/", response_model=ModelResponse, status_code=status.HTTP_201_CREATED)
-def create_model(payload: ModelCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
+def create_model(payload: ModelCreate, current_user: User = Depends(
+    require_permission(MODEL_CREATE)
+    ),
+db: Session = Depends(get_db), user=Depends(get_current_user)):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admins only")
     
@@ -38,7 +50,10 @@ def read_models(
     group_id: int | None = Query(None),
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db)
+    current_user: User = Depends(
+    require_permission(MODEL_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     query = db.query(Model).options(
         joinedload(Model.product_group)
@@ -80,7 +95,10 @@ def read_models(
 
 # 3. UPDATE (Consolidated & safely linked to CRUD)
 @router.put("/{model_id}", response_model=ModelResponse)
-def update_model(model_id: int, payload: ModelUpdate, db: Session = Depends(get_db), user=Depends(get_current_user)):
+def update_model(model_id: int, payload: ModelUpdate,current_user: User = Depends(
+    require_permission(MODEL_UPDATE)
+    ),
+db: Session = Depends(get_db), user=Depends(get_current_user)):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admins only")
         
@@ -103,13 +121,19 @@ def update_model(model_id: int, payload: ModelUpdate, db: Session = Depends(get_
 
 # 4. SEARCH
 @router.get("/search/", response_model=List[ModelResponse])
-def search_models(q: str, db: Session = Depends(get_db)):
+def search_models(q: str, current_user: User = Depends(
+    require_permission(MODEL_VIEW)
+    ),
+db: Session = Depends(get_db)):
     return crud_models.search_models(db, query=q)
 
 
 # 5. DELETE
 @router.delete("/{model_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_model(model_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+def delete_model(model_id: int, current_user: User = Depends(
+    require_permission(MODEL_DELETE)
+    ),
+db: Session = Depends(get_db), user=Depends(get_current_user)):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admins only")
         

@@ -12,6 +12,15 @@ from app.schemas.quotation import (
 )
 from app.crud import quotation as crud_quotation
 from app.models.quotation import Quotation
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+    QUOTATION_CREATE,
+    QUOTATION_DELETE ,
+    QUOTATION_PRINT,
+    QUOTATION_UPDATE,
+    QUOTATION_VIEW,
+)
+from app.models.users import User
 
 router = APIRouter(prefix="/quotations", tags=["Quotations"])
 
@@ -19,8 +28,10 @@ router = APIRouter(prefix="/quotations", tags=["Quotations"])
 @router.post("/", response_model=QuotationResponse, status_code=status.HTTP_201_CREATED)
 def create_quotation(
     payload: QuotationCreate, 
-    db: Session = Depends(get_db), 
-    user=Depends(get_current_user)
+    current_user: User = Depends(
+    require_permission(QUOTATION_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     Generates a brand new base quotation line item with an automated sequential reference number.
@@ -31,7 +42,10 @@ def create_quotation(
 
 # 2. GET ACTIVE REVISION BY NUMBER
 @router.get("/active/{quotation_no:path}", response_model=QuotationResponse)
-def read_active_quotation(quotation_no: str, db: Session = Depends(get_db)):
+def read_active_quotation(quotation_no: str, current_user: User = Depends(
+    require_permission(QUOTATION_VIEW)
+    ),
+db: Session = Depends(get_db),):
     """
     Fetches strictly the currently active production revision matching a specific quotation number string.
     """
@@ -46,7 +60,10 @@ def read_active_quotation(quotation_no: str, db: Session = Depends(get_db)):
 
 # 3. GET COMPLETE HISTORY TIMELINE
 @router.get("/history/{quotation_no:path}", response_model=List[QuotationResponse])
-def read_quotation_history(quotation_no: str, db: Session = Depends(get_db)):
+def read_quotation_history(quotation_no: str, current_user: User = Depends(
+    require_permission(QUOTATION_VIEW)
+    ),
+db: Session = Depends(get_db),):
     """
     Returns every revision snapshot associated with a quotation number for full audit compliance.
     """
@@ -64,8 +81,10 @@ def read_quotation_history(quotation_no: str, db: Session = Depends(get_db)):
 def revision_quotation(
     quotation_no: str, 
     payload: QuotationUpdate, 
-    db: Session = Depends(get_db), 
-    user=Depends(get_current_user)
+    current_user: User = Depends(
+    require_permission(QUOTATION_UPDATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     Intercepts modifications, updates historical flags on old records, 
@@ -80,7 +99,10 @@ def list_active_quotations(
     q: Optional[str] = Query(None, description="Search client name or company name"),
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db)
+    current_user: User = Depends(
+    require_permission(QUOTATION_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     Retrieves a paginated collection of active baseline quotes for dashboard display.

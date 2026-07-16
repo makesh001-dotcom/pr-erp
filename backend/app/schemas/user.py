@@ -1,18 +1,41 @@
 from pydantic import BaseModel
 
-# 1. Used for the incoming Login request (Frontend -> Backend)
+
+# ==========================
+# Login Request
+# ==========================
+
 class LoginRequest(BaseModel):
     username: str
     password: str
 
-# 2. Used for the user data we send back (Backend -> Frontend)
+
+# ==========================
+# User returned after login
+# ==========================
+
 class UserInfo(BaseModel):
+    id: int
     username: str
     role: str
-    
 
-# 3. The final response structure
+
+# ==========================
+# Authenticated User (/auth/me)
+# ==========================
+
+class CurrentUserResponse(BaseModel):
+    id: int
+    username: str
+    role: str
+    permissions: list[str]
+
+
+# ==========================
+# JWT Response
+# ==========================
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-    user: UserInfo  
+    user: UserInfo

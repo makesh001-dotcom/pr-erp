@@ -18,6 +18,14 @@ from app.crud.client import (
     reactivate_client,
 )
 from app.models.client import Client
+from app.auth.dependencies import require_permission
+from app.core.permisiion import (
+    CLIENT_VIEW,
+    CLIENT_CREATE,
+    CLIENT_UPDATE,
+    CLIENT_DELETE,
+)
+from app.models.users import User
 
 router = APIRouter(
     prefix="/clients",
@@ -40,7 +48,10 @@ def list_clients_endpoint(
     is_active: Optional[bool] = Query(True),
     sort_by: str = Query("company_name"),
     order: str = Query("asc"),
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(CLIENT_VIEW)
+),
+db: Session = Depends(get_db),
 ):
     skip = (page - 1) * limit
 
@@ -65,7 +76,10 @@ def list_clients_endpoint(
 @router.get("/{client_id}", response_model=ClientResponse)
 def get_client_endpoint(
     client_id: int,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(CLIENT_VIEW)
+),
+db: Session = Depends(get_db),
 ):
     """Get client by ID"""
     return get_client(db, client_id)
@@ -77,7 +91,10 @@ def get_client_endpoint(
 @router.post("/", response_model=ClientResponse, status_code=201)
 def create_client_endpoint(
     data: ClientCreate,
-    db: Session = Depends(get_db),
+   current_user: User = Depends(
+    require_permission(CLIENT_CREATE)
+),
+db: Session = Depends(get_db),
 ):
     """Create a new client"""
     return create_client(db, data)
@@ -90,7 +107,10 @@ def create_client_endpoint(
 def update_client_endpoint(
     client_id: int,
     data: ClientUpdate,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(CLIENT_UPDATE)
+),
+db: Session = Depends(get_db),
 ):
     """Update client details (partial update)"""
     return update_client(db, client_id, data)
@@ -102,7 +122,10 @@ def update_client_endpoint(
 @router.delete("/{client_id}", response_model=ClientResponse)
 def deactivate_client_endpoint(
     client_id: int,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(CLIENT_DELETE)
+),
+db: Session = Depends(get_db),
 ):
     """Deactivate a client (soft delete)"""
     return deactivate_client(db, client_id)
@@ -114,7 +137,10 @@ def deactivate_client_endpoint(
 @router.put("/{client_id}/reactivate", response_model=ClientResponse)
 def reactivate_client_endpoint(
     client_id: int,
-    db: Session = Depends(get_db),
+   current_user: User = Depends(
+    require_permission(CLIENT_UPDATE)
+),
+db: Session = Depends(get_db),
 ):
     """Reactivate a deactivated client"""
     return reactivate_client(db, client_id)
@@ -126,7 +152,10 @@ def reactivate_client_endpoint(
 @router.post("/bulk", status_code=201)
 def bulk_import_clients(
     data: List[ClientCreate],
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(CLIENT_CREATE)
+),
+db: Session = Depends(get_db),
 ):
     """Bulk import clients"""
     created = []

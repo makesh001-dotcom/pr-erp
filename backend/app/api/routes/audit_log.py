@@ -5,6 +5,11 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.crud.audit_log import get_audit_logs, get_audit_stats
+from app.auth.dependencies import require_permission
+from app.core.permisiion import (
+    AUDIT_VIEW,
+)
+from app.models.users import User
 
 router = APIRouter(
     prefix="/audit-logs",
@@ -22,7 +27,10 @@ def list_audit_logs(
     search: Optional[str] = None,
     date_from: Optional[datetime] = None,
     date_to: Optional[datetime] = None,
-    db: Session = Depends(get_db),
+   current_user: User = Depends(
+    require_permission(AUDIT_VIEW)
+),
+db: Session = Depends(get_db),
 ):
     """Get audit logs with filters"""
     return get_audit_logs(
@@ -39,6 +47,9 @@ def list_audit_logs(
 
 
 @router.get("/stats")
-def audit_statistics(db: Session = Depends(get_db)):
+def audit_statistics(current_user: User = Depends(
+    require_permission(AUDIT_VIEW)
+),
+db: Session = Depends(get_db),):
     """Get audit log statistics"""
     return get_audit_stats(db)

@@ -14,13 +14,25 @@ from app.schemas.manufacturer import (
 )
 from app.crud import manufacturer as crud_mfr
 
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+    MANUFACTURER_VIEW,
+MANUFACTURER_CREATE ,
+MANUFACTURER_UPDATE ,
+MANUFACTURER_DELETE ,
+)
+from app.models.users import User
+
 router = APIRouter(prefix="/manufacturers", tags=["Manufacturers"])
 
 # --- 1. CREATE ---
 @router.post("/", response_model=ManufacturerResponse, status_code=status.HTTP_201_CREATED)
 def create_manufacturer(
     payload: ManufacturerCreate, 
-    db: Session = Depends(get_db),
+   current_user: User = Depends(
+    require_permission(MANUFACTURER_CREATE)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     if user.role != "admin":
@@ -30,7 +42,10 @@ def create_manufacturer(
 # --- 2. TREE (Place before /{mfr_id} to avoid path conflict) ---
 @router.get("/tree/", response_model=List[ManufacturerTree])
 def get_manufacturer_tree(
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(MANUFACTURER_VIEW)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user) # Keep consistent auth if needed
 ):
     """
@@ -50,7 +65,10 @@ def read_manufacturers(
     limit: int = Query(10, ge=1, le=100),
     sort_by: str = "id",
     order: str = "asc",
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(MANUFACTURER_VIEW)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     items = crud_mfr.get_manufacturer(
@@ -69,7 +87,10 @@ def read_manufacturers(
 @router.get("/search", response_model=List[ManufacturerResponse])
 def search_manufacturers(
     q: str = Query(..., min_length=1), 
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(MANUFACTURER_VIEW)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     return crud_mfr.search_manufacturer(db, query=q)
@@ -78,7 +99,10 @@ def search_manufacturers(
 @router.get("/{mfr_id}", response_model=ManufacturerResponse)
 def read_manufacturer_by_id(
     mfr_id: int, 
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(MANUFACTURER_VIEW)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     db_mfr = db.query(Manufacturer).filter(Manufacturer.id == mfr_id).first()
@@ -94,7 +118,10 @@ def read_manufacturer_by_id(
 def update_manufacturer(
     mfr_id: int, 
     payload: ManufacturerUpdate, 
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(MANUFACTURER_UPDATE)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     if user.role != "admin":
@@ -108,7 +135,10 @@ def update_manufacturer(
 @router.delete("/{mfr_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_manufacturer(
     mfr_id: int, 
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(MANUFACTURER_DELETE)
+    ),
+db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
     if user.role != "admin":

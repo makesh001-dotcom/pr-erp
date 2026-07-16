@@ -18,8 +18,12 @@ from app.api.routes.sales import router as sales_router
 from app.api.routes.demo_tracking import router as demo_router
 from app.api.routes.analytics import router as analytics_router
 from app.api.routes.audit_log import router as audit_router
+# Example inside app/api/routes/auth.py or main.py
+from app.models.role import  Role
+from app.models.permission import Permission
+from app.models.role_permission import RolePermission
 
-app = FastAPI(title="Inventory Management API")
+app = FastAPI(title="Inventory rManagement API")
 
 origins = [
     "http://localhost:5173",

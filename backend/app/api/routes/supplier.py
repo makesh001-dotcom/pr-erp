@@ -18,6 +18,14 @@ from app.crud.supplier import (
     deactivate_supplier,
     reactivate_supplier
 )
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+    SUPPLIER_VIEW ,
+    SUPPLIER_CREATE ,
+    SUPPLIER_UPDATE ,
+    SUPPLIER_DELETE ,
+)
+from app.models.users import User
 
 router = APIRouter(
     prefix="/suppliers", 
@@ -35,7 +43,10 @@ router = APIRouter(
 @router.post("/", response_model=SupplierResponse, status_code=201)
 def create_supplier_endpoint(
     supplier: SupplierCreate,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(SUPPLIER_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Create a new supplier with auto-generated supplier code"""
     return create_supplier(db, supplier)
@@ -55,7 +66,10 @@ def list_suppliers_endpoint(
     limit: int = Query(100, ge=1, le=500, description="Max records to return"),
     search: Optional[str] = Query(None, description="Search by name, code, GSTIN, or contact"),
     is_active: Optional[bool] = Query(True, description="Filter by active status"),
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(SUPPLIER_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     List suppliers with optional search and pagination.
@@ -80,7 +94,10 @@ def list_suppliers_endpoint(
 @router.get("/code/{supplier_code}", response_model=SupplierResponse)
 def get_supplier_by_code_endpoint(
     supplier_code: str,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(SUPPLIER_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """Get supplier by their unique supplier code (e.g., SUP00001)"""
     supplier = db.query(Supplier).filter(
@@ -102,7 +119,10 @@ def get_supplier_by_code_endpoint(
 @router.get("/{supplier_id}", response_model=SupplierResponse)
 def get_supplier_endpoint(
     supplier_id: int,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(SUPPLIER_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """Get supplier details by ID"""
     return get_supplier(db, supplier_id)
@@ -115,7 +135,10 @@ def get_supplier_endpoint(
 def update_supplier_endpoint(
     supplier_id: int,
     supplier: SupplierUpdate,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(SUPPLIER_UPDATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Update supplier details (partial update supported)"""
     return update_supplier(db, supplier_id, supplier)
@@ -127,7 +150,10 @@ def update_supplier_endpoint(
 @router.delete("/{supplier_id}", response_model=SupplierResponse)
 def deactivate_supplier_endpoint(
     supplier_id: int,
-    db: Session = Depends(get_db),
+   current_user: User = Depends(
+    require_permission(SUPPLIER_DELETE)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     Deactivate a supplier (soft delete).
@@ -142,7 +168,10 @@ def deactivate_supplier_endpoint(
 @router.put("/{supplier_id}/reactivate", response_model=SupplierResponse)
 def reactivate_supplier_endpoint(
     supplier_id: int,
-    db: Session = Depends(get_db),
+    current_user: User = Depends(
+    require_permission(SUPPLIER_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Reactivate a previously deactivated supplier"""
     return reactivate_supplier(db, supplier_id)

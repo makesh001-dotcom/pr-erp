@@ -17,6 +17,14 @@ from app.crud.purchase import (
     post_purchase,
     cancel_purchase,
 )
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+    PURCHASE_VIEW ,
+    PURCHASE_CREATE ,
+    PURCHASE_UPDATE ,
+    PURCHASE_DELETE ,
+)
+from app.models.users import User
 
 router = APIRouter(
     prefix="/purchases",  # ⭐ Plural is REST standard 
@@ -34,7 +42,10 @@ router = APIRouter(
 @router.post("/", response_model=PurchaseResponse, status_code=201)
 def create_purchase_endpoint(
     data: PurchaseCreate,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(PURCHASE_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Create a new purchase inward with items, serials, and stock updates"""
     return create_purchase(db, data)
@@ -50,7 +61,10 @@ def list_purchases_endpoint(
     supplier_id: Optional[int] = Query(None, description="Filter by supplier"),
     status: Optional[str] = Query(None, description="Filter by status (DRAFT/POSTED/CANCELLED)"),
     purchase_type: Optional[str] = Query(None, description="Filter by type"),
-    db: Session = Depends(get_db),
+   current_user: User = Depends(
+    require_permission(PURCHASE_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     List purchases with pagination and optional filters.
@@ -77,7 +91,10 @@ def list_purchases_endpoint(
 @router.get("/{purchase_id}", response_model=PurchaseResponse)
 def get_purchase_endpoint(
     purchase_id: int,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(PURCHASE_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """Get a purchase by ID with all items and serial numbers"""
     return get_purchase(db, purchase_id)
@@ -90,7 +107,10 @@ def get_purchase_endpoint(
 def update_purchase_endpoint(
     purchase_id: int,
     data: PurchaseUpdate,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(PURCHASE_UPDATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Update purchase details (partial update supported)"""
     return update_purchase(db, purchase_id, data)
@@ -102,7 +122,10 @@ def update_purchase_endpoint(
 @router.post("/{purchase_id}/post", response_model=PurchaseResponse)
 def post_purchase_endpoint(
     purchase_id: int,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(PURCHASE_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     Post a draft purchase.
@@ -117,7 +140,10 @@ def post_purchase_endpoint(
 @router.post("/{purchase_id}/cancel", response_model=PurchaseResponse)
 def cancel_purchase_endpoint(
     purchase_id: int,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(PURCHASE_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Cancel a purchase (POSTED → CANCELLED). Reverses stock if needed."""
     return cancel_purchase(db, purchase_id)

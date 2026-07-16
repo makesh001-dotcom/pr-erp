@@ -23,6 +23,9 @@ from app.models.purchase import (  # ⭐ ADD THIS IMPORT
     PurchaseCounter
 )
 from app.models.audit_log import AuditLog
+from app.models.role import Role
+from app.models.permission import Permission
+from app.models.role_permission import RolePermission
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

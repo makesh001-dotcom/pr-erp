@@ -18,6 +18,14 @@ from app.crud.sales import (
     cancel_sales,
 )
 
+from app.auth.dependencies import require_permission
+from app.core.permisiion import(
+    SALE_VIEW ,
+    SALE_CREATE ,
+    SALE_UPDATE ,
+    SALE_DELETE ,
+)
+from app.models.users import User
 router = APIRouter(
     prefix="/api/v1/sales",
     tags=["Sales"],
@@ -34,7 +42,10 @@ router = APIRouter(
 @router.post("/", response_model=SalesResponse, status_code=201)
 def create_sales_endpoint(
     data: SalesCreate,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(SALE_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Create a new sales order as DRAFT"""
     return create_sales(db, data)
@@ -50,7 +61,10 @@ def list_sales_endpoint(
     client_id: Optional[int] = Query(None, description="Filter by client"),
     status: Optional[str] = Query(None, description="Filter by status (DRAFT/POSTED/CANCELLED)"),
     sales_type: Optional[str] = Query(None, description="Filter by sales type"),
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(SALE_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     List sales with pagination and optional filters.
@@ -71,7 +85,10 @@ def list_sales_endpoint(
 @router.get("/{sales_id}", response_model=SalesResponse)
 def get_sales_endpoint(
     sales_id: int,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(SALE_VIEW)
+    ),
+db: Session = Depends(get_db),
 ):
     """Get a sales order by ID with all items and serial numbers"""
     return get_sales(db, sales_id)
@@ -84,7 +101,10 @@ def get_sales_endpoint(
 def update_sales_endpoint(
     sales_id: int,
     data: SalesUpdate,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(SALE_UPDATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Update sales details (partial update, DRAFT only)"""
     return update_sales(db, sales_id, data)
@@ -96,7 +116,10 @@ def update_sales_endpoint(
 @router.post("/{sales_id}/post", response_model=SalesResponse)
 def post_sales_endpoint(
     sales_id: int,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(SALE_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """
     Post a draft sales.
@@ -112,7 +135,10 @@ def post_sales_endpoint(
 @router.post("/{sales_id}/cancel", response_model=SalesResponse)
 def cancel_sales_endpoint(
     sales_id: int,
-    db: Session = Depends(get_db),
+     current_user: User = Depends(
+    require_permission(SALE_CREATE)
+    ),
+db: Session = Depends(get_db),
 ):
     """Cancel a sales order"""
     return cancel_sales(db, sales_id)
