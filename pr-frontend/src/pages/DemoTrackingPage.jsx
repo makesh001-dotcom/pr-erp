@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+// src/pages/DemoTrackingPage.jsx — Complete Rewrite
+
+import React, { useState, useEffect } from "react";
 import { getDemoTracking, getDemoStats } from "../api/demoAPI";
-import React from 'react';
 
 export default function DemoTrackingPage() {
   const [demoData, setDemoData] = useState([]);
@@ -36,6 +37,9 @@ export default function DemoTrackingPage() {
     }
   };
 
+  // ================================
+  // BADGE HELPERS
+  // ================================
   const getStatusBadge = (status) => {
     const styles = {
       DEMO_FROM_SUPPLIER: "bg-purple-100 text-purple-800 border-purple-300",
@@ -56,87 +60,91 @@ export default function DemoTrackingPage() {
     return labels[status] || status;
   };
 
-  const getDueBadge = (days, isOverdue) => {
-    if (isOverdue) {
-      return "bg-red-100 text-red-800 font-bold";
-    } else if (days !== null && days <= 7) {
-      return "bg-amber-100 text-amber-800 font-bold";
-    } else if (days !== null) {
-      return "bg-green-100 text-green-800";
-    }
-    return "bg-gray-100 text-gray-500";
+  const getSourceBadge = (source) => {
+    const styles = {
+      purchase: "bg-purple-50 text-purple-700",
+      sales: "bg-blue-50 text-blue-700",
+      delivery_challan: "bg-orange-50 text-orange-700",
+      unknown: "bg-muted text-gray-600",
+    };
+    const labels = {
+      purchase: "Purchase",
+      sales: "Sales",
+      delivery_challan: "DC",
+      unknown: "—",
+    };
+    return { style: styles[source] || styles.unknown, label: labels[source] || source };
   };
 
-  const getDueLabel = (days, isOverdue) => {
+  const getDueBadge = (days, isOverdue, isDueSoon) => {
+    if (isOverdue) return "bg-red-100 text-red-800 font-bold";
+    if (isDueSoon) return "bg-amber-100 text-amber-800 font-bold";
+    if (days !== null) return "bg-green-100 text-green-800";
+    return "bg-gray-100 text-muted-foreground";
+  };
+
+  const getDueLabel = (days, isOverdue, isDueSoon) => {
     if (days === null) return "No deadline";
-    if (isOverdue) return `⚠ ${Math.abs(days)} days overdue!`;
-    if (days === 0) return "Due today!";
-    if (days === 1) return "Due tomorrow";
-    return `${days} days remaining`;
+    if (isOverdue) return `⚠ ${Math.abs(days)}d overdue`;
+    if (isDueSoon && days === 0) return "Due today";
+    if (isDueSoon) return `${days}d left`;
+    return `${days}d remaining`;
   };
 
+  const getDCStatusBadge = (status) => {
+    const styles = {
+      DRAFT: "bg-yellow-100 text-yellow-700",
+      PRINTED: "bg-blue-100 text-blue-700",
+      CONFIRMED: "bg-green-100 text-green-700",
+      CANCELLED: "bg-red-100 text-red-700",
+      COMPLETED: "bg-gray-100 text-gray-600",
+    };
+    return styles[status] || "bg-gray-100 text-gray-600";
+  };
+
+  // ================================
+  // FILTER
+  // ================================
   const filteredData = demoData.filter((item) => {
     if (!search) return true;
     const q = search.toLowerCase();
     return (
       item.serial_number?.toLowerCase().includes(q) ||
       item.model_no?.toLowerCase().includes(q) ||
-      item.purchase?.supplier_name?.toLowerCase().includes(q) ||
-      item.sales?.client_name?.toLowerCase().includes(q)
+      item.supplier?.toLowerCase().includes(q) ||
+      item.customer?.toLowerCase().includes(q)
     );
   });
 
+  // ================================
+  // RENDER
+  // ================================
   return (
     <div className="space-y-6 p-6">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Demo Tracking</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Track demo units across suppliers and customers
+          <h1 className="text-2xl font-bold text-foreground">Demo Tracking</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Track demo units across suppliers, customers, and delivery challans
           </p>
         </div>
       </div>
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <StatCard
-            icon="📦"
-            label="Total Demos"
-            value={stats.total_demo_units}
-            color="indigo"
-          />
-          <StatCard
-            icon="🏢"
-            label="From Suppliers"
-            value={stats.from_suppliers}
-            color="purple"
-          />
-          <StatCard
-            icon="👥"
-            label="With Customers"
-            value={stats.with_customers}
-            color="blue"
-          />
-          <StatCard
-            icon="🟡"
-            label="Due Soon"
-            value={stats.due_soon}
-            color="amber"
-          />
-          <StatCard
-            icon="🔴"
-            label="Overdue"
-            value={stats.overdue}
-            color="red"
-            highlight={stats.overdue > 0}
-          />
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+          <StatCard icon="📦" label="Total Demos" value={stats.total_demo_units} color="indigo" />
+          <StatCard icon="🏢" label="From Suppliers" value={stats.from_suppliers} color="purple" />
+          <StatCard icon="👥" label="With Customers" value={stats.with_customers} color="blue" />
+          <StatCard icon="🟡" label="Due Soon" value={stats.due_soon} color="amber" />
+          <StatCard icon="🔴" label="Overdue" value={stats.overdue} color="red" highlight={stats.overdue > 0} />
+          <StatCard icon="📄" label="Pending DC" value={stats.missing_dc || 0} color="red" highlight={(stats.missing_dc || 0) > 0} />
         </div>
       )}
 
       {/* Filters + Search */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+      <div className="bg-card rounded-2xl border  border-border shadow-sm p-4">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex gap-2 flex-wrap">
             {[
@@ -144,13 +152,14 @@ export default function DemoTrackingPage() {
               { key: "from_supplier", label: "From Supplier", icon: "🏢" },
               { key: "with_customer", label: "With Customer", icon: "👥" },
               { key: "overdue", label: "Overdue", icon: "🔴" },
+              { key: "missing_dc", label: "Missing DC", icon: "📄" },
             ].map((f) => (
               <button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
                   filter === f.key
-                    ? "bg-indigo-600 text-white shadow-sm"
+                    ? "bg-primary-600 text-white shadow-sm"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
@@ -163,182 +172,236 @@ export default function DemoTrackingPage() {
             placeholder="Search serial, model, party..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:w-64 px-4 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-indigo-400"
+            className="w-full sm:w-64 px-4 py-2 border  border-border rounded-xl text-sm outline-none focus:border-indigo-400"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border  border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-muted border-b  border-border text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 <th className="px-4 py-3">Serial Number</th>
                 <th className="px-4 py-3">Model</th>
+                <th className="px-4 py-3">Source</th>
                 <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">From (Supplier)</th>
-                <th className="px-4 py-3">To (Customer)</th>
+                <th className="px-4 py-3">From / To</th>
+                <th className="px-4 py-3">DC Links</th>
                 <th className="px-4 py-3 text-center">Return Due</th>
-                <th className="px-4 py-3 text-center w-20">Details</th>
+                <th className="px-4 py-3 text-center w-12">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-16 text-center text-gray-400">
+                  <td colSpan={8} className="px-4 py-16 text-center text-gray-400">
                     Loading demo tracking data...
                   </td>
                 </tr>
               ) : filteredData.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-16 text-center text-gray-400">
+                  <td colSpan={8} className="px-4 py-16 text-center text-gray-400">
                     {filter === "overdue"
-                      ? "🎉 No overdue demos! All units are on track."
+                      ? "🎉 No overdue demos!"
+                      : filter === "missing_dc"
+                      ? "✅ All demos have DC documentation."
                       : "No demo units found."}
                   </td>
                 </tr>
               ) : (
-                filteredData.map((item) => (
-                  <React.Fragment key={item.id || item.serial_number}>
-                    <tr
-                      onClick={() =>
-                        setExpandedSerial(
-                          expandedSerial === item.serial_number ? null : item.serial_number
-                        )
-                      }
-                      className={`hover:bg-gray-50/50 transition cursor-pointer ${
-                        item.is_overdue ? "bg-red-50/30" : ""
-                      }`}
-                    >
-                      <td className="px-4 py-3">
-                        <span className="font-mono font-semibold text-gray-900">
-                          {item.serial_number}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="font-medium text-gray-900">{item.model_no}</div>
-                        {item.description && (
-                          <div className="text-xs text-gray-400">{item.description}</div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusBadge(
-                            item.current_status
-                          )}`}
-                        >
-                          {getStatusLabel(item.current_status)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-xs">
-                        {item.purchase ? (
-                          <>
-                            <div className="font-medium text-gray-700">
-                              {item.purchase.supplier_name}
-                            </div>
-                            <div className="text-gray-400">{item.purchase.purchase_no}</div>
-                          </>
-                        ) : (
-                          <span className="text-gray-400">—</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-xs">
-                        {item.sales ? (
-                          <>
-                            <div className="font-medium text-gray-700">
-                              {item.sales.client_name}
-                            </div>
-                            <div className="text-gray-400">{item.sales.sales_no}</div>
-                          </>
-                        ) : (
-                          <span className="text-gray-400">
-                            {item.current_status === "DEMO_FROM_SUPPLIER"
-                              ? "In stock"
-                              : "—"}
+                filteredData.map((item) => {
+                  const sourceInfo = getSourceBadge(item.source);
+                  
+                  return (
+                    <React.Fragment key={item.id || item.serial_number}>
+                      <tr
+                        onClick={() =>
+                          setExpandedSerial(
+                            expandedSerial === item.serial_number ? null : item.serial_number
+                          )
+                        }
+                        className={`hover:bg-muted/50 transition cursor-pointer ${
+                          item.is_overdue ? "bg-red-50/30" : ""
+                        } ${item.has_missing_dc ? "border-l-4 border-l-amber-400" : ""}`}
+                      >
+                        {/* Serial */}
+                        <td className="px-4 py-3">
+                          <span className="font-mono font-semibold text-foreground">
+                            {item.serial_number}
                           </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${getDueBadge(
-                            item.days_remaining,
-                            item.is_overdue
-                          )}`}
-                        >
-                          {getDueLabel(item.days_remaining, item.is_overdue)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <span
-                          className={`text-lg transition-transform ${
-                            expandedSerial === item.serial_number ? "rotate-90" : ""
-                          }`}
-                        >
-                          ▶
-                        </span>
-                      </td>
-                    </tr>
-
-                    {/* Expanded Lifecycle */}
-                    {expandedSerial === item.serial_number && (
-                      <tr key={`exp-${item.serial_number}`}>
-                        <td colSpan={7} className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                          <div className="space-y-3">
-                            <h4 className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                              📜 Lifecycle Timeline
-                            </h4>
-                            <div className="relative pl-6 border-l-2 border-indigo-200 space-y-4">
-                              {item.lifecycle?.map((event, i) => (
-                                <div key={i} className="relative">
-                                  <div
-                                    className={`absolute -left-[25px] w-3 h-3 rounded-full border-2 border-white ${
-                                      event.type === "inward"
-                                        ? "bg-green-500"
-                                        : "bg-blue-500"
-                                    }`}
-                                  ></div>
-                                  <div className="text-xs">
-                                    <div className="font-semibold text-gray-700">
-                                      {event.event}
-                                    </div>
-                                    <div className="text-gray-500">
-                                      {event.party} • {event.reference}
-                                    </div>
-                                    <div className="text-gray-400 text-[11px]">
-                                      {new Date(event.date).toLocaleDateString("en-IN", {
-                                        day: "numeric",
-                                        month: "short",
-                                        year: "numeric",
-                                      })}
-                                    </div>
-                                  </div>
+                          {item.has_missing_dc && (
+                            <span className="ml-2 text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">
+                              Missing DC
+                            </span>
+                          )}
+                        </td>
+                        
+                        {/* Model */}
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-foreground">{item.model_no}</div>
+                          {item.description && (
+                            <div className="text-xs text-gray-400 truncate max-w-[150px]">
+                              {item.description}
+                            </div>
+                          )}
+                        </td>
+                        
+                        {/* Source */}
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${sourceInfo.style}`}>
+                            {sourceInfo.label}
+                          </span>
+                        </td>
+                        
+                        {/* Status */}
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusBadge(item.current_status)}`}>
+                            {getStatusLabel(item.current_status)}
+                          </span>
+                        </td>
+                        
+                        {/* From/To Party */}
+                        <td className="px-4 py-3 text-xs">
+                          {item.supplier && (
+                            <div className="text-purple-700">
+                              ← {item.supplier}
+                              <div className="text-gray-400 text-[10px]">{item.supplier_ref}</div>
+                            </div>
+                          )}
+                          {item.customer && (
+                            <div className="text-blue-700 mt-0.5">
+                              → {item.customer}
+                              <div className="text-gray-400 text-[10px]">{item.customer_ref}</div>
+                            </div>
+                          )}
+                          {!item.supplier && !item.customer && (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        
+                        {/* DC Links */}
+                        <td className="px-4 py-3 text-xs">
+                          {item.dc_links && item.dc_links.length > 0 ? (
+                            <div className="space-y-1">
+                              {item.dc_links.map((dc, i) => (
+                                <div key={i} className="flex items-center gap-1.5">
+                                  <span className={`w-1.5 h-1.5 rounded-full ${
+                                    dc.direction === "OUT" ? "bg-orange-500" : "bg-teal-500"
+                                  }`}></span>
+                                  <span className="font-mono text-[10px] font-medium">{dc.dc_no}</span>
+                                  <span className={`px-1 py-0.5 rounded text-[9px] font-semibold ${getDCStatusBadge(dc.dc_status)}`}>
+                                    {dc.dc_status}
+                                  </span>
                                 </div>
                               ))}
-                              {item.current_status === "DEMO_WITH_CUSTOMER" &&
-                                item.expected_return_date && (
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        
+                        {/* Return Due */}
+                        <td className="px-4 py-3 text-center">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getDueBadge(item.days_remaining, item.is_overdue, item.is_due_soon)}`}>
+                            {getDueLabel(item.days_remaining, item.is_overdue, item.is_due_soon)}
+                          </span>
+                        </td>
+                        
+                        {/* Expand Toggle */}
+                        <td className="px-4 py-3 text-center">
+                          <span className={`inline-block text-xs transition-transform duration-200 ${
+                            expandedSerial === item.serial_number ? "rotate-90" : ""
+                          }`}>
+                            ▶
+                          </span>
+                        </td>
+                      </tr>
+
+                      {/* Expanded Lifecycle */}
+                      {expandedSerial === item.serial_number && (
+                        <tr>
+                          <td colSpan={8} className="bg-muted px-6 py-4 border-b  border-border">
+                            <div className="space-y-3">
+                              <h4 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                                📜 Lifecycle Timeline
+                              </h4>
+                              <div className="relative pl-6 border-l-2 border-indigo-200 space-y-4">
+                                {item.lifecycle?.map((event, i) => {
+                                  let dotColor = "bg-green-500";
+                                  if (event.source === "delivery_challan") {
+                                    dotColor = event.type === "outward" ? "bg-orange-500" : "bg-teal-500";
+                                  } else if (event.source === "sales") {
+                                    dotColor = "bg-blue-500";
+                                  }
+
+                                  return (
+                                    <div key={i} className="relative">
+                                      <div className={`absolute -left-[25px] w-3 h-3 rounded-full border-2 border-white ${dotColor}`}></div>
+                                      <div className="text-xs">
+                                        <div className="font-semibold text-gray-700 flex items-center gap-1.5 flex-wrap">
+                                          {event.event}
+                                          {event.source === "delivery_challan" && (
+                                            <span className="text-[10px] bg-orange-100 text-orange-600 px-1 rounded font-medium">
+                                              DC
+                                            </span>
+                                          )}
+                                          {event.source === "purchase" && (
+                                            <span className="text-[10px] bg-purple-100 text-purple-600 px-1 rounded font-medium">
+                                              Purchase
+                                            </span>
+                                          )}
+                                          {event.source === "sales" && (
+                                            <span className="text-[10px] bg-blue-100 text-blue-600 px-1 rounded font-medium">
+                                              Sales
+                                            </span>
+                                          )}
+                                          {event.dc_status && (
+                                            <span className={`text-[9px] px-1 py-0.5 rounded font-semibold ${getDCStatusBadge(event.dc_status)}`}>
+                                              {event.dc_status}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div className="text-muted-foreground">
+                                          {event.party} • {event.reference}
+                                        </div>
+                                        <div className="text-gray-400 text-[11px]">
+                                          {new Date(event.date).toLocaleDateString("en-IN", {
+                                            day: "numeric",
+                                            month: "short",
+                                            year: "numeric",
+                                          })}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+
+                                {/* Expected Return Marker */}
+                                {item.current_status === "DEMO_WITH_CUSTOMER" && item.expected_return_date && (
                                   <div className="relative">
                                     <div className="absolute -left-[25px] w-3 h-3 rounded-full border-2 border-white bg-amber-500"></div>
                                     <div className="text-xs">
-                                      <div className="font-semibold text-amber-700">
-                                        Expected Return
-                                      </div>
-                                      <div className="text-gray-500">
-                                        {new Date(item.expected_return_date).toLocaleDateString(
-                                          "en-IN",
-                                          { day: "numeric", month: "short", year: "numeric" }
-                                        )}
+                                      <div className="font-semibold text-amber-700">Expected Return</div>
+                                      <div className="text-muted-foreground">
+                                        {new Date(item.expected_return_date).toLocaleDateString("en-IN", {
+                                          day: "numeric",
+                                          month: "short",
+                                          year: "numeric",
+                                        })}
                                       </div>
                                     </div>
                                   </div>
                                 )}
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -349,11 +412,11 @@ export default function DemoTrackingPage() {
 }
 
 // ================================
-// STAT CARD COMPONENT
+// STAT CARD
 // ================================
 const StatCard = ({ icon, label, value, color, highlight }) => {
   const colorMap = {
-    indigo: "bg-indigo-50 text-indigo-600",
+    indigo: "bg-primary-50 text-primary-600",
     purple: "bg-purple-50 text-purple-600",
     blue: "bg-blue-50 text-blue-600",
     amber: "bg-amber-50 text-amber-600",
@@ -362,17 +425,15 @@ const StatCard = ({ icon, label, value, color, highlight }) => {
   };
 
   return (
-    <div
-      className={`bg-white rounded-2xl border p-5 shadow-sm transition ${
-        highlight ? "border-red-300 ring-2 ring-red-100" : "border-gray-100"
-      }`}
-    >
+    <div className={`bg-card rounded-2xl border p-5 shadow-sm transition ${
+      highlight ? "border-red-300 ring-2 ring-red-100" : "border-gray-100"
+    }`}>
       <div className="flex items-center gap-4">
         <div className={`w-12 h-12 rounded-xl ${colorMap[color]} flex items-center justify-center text-xl`}>
           {icon}
         </div>
         <div>
-          <p className={`text-2xl font-bold ${highlight ? "text-red-600" : "text-gray-900"}`}>
+          <p className={`text-2xl font-bold ${highlight ? "text-red-600" : "text-foreground"}`}>
             {value}
           </p>
           <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">{label}</p>

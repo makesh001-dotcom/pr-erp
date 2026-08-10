@@ -99,7 +99,14 @@ def get_models(db: Session, skip: int = 0, limit: int = 10, sort_by: str = "id",
 
 
 def search_models(db: Session, query: str):
-    return db.query(Model).filter(Model.model_no.ilike(f"%{query}%")).all()
+    return (
+        db.query(Model)
+        .options(
+            joinedload(Model.product_group).joinedload(ProductGroup.manufacturer)
+        )
+        .filter(Model.model_no.ilike(f"%{query}%"))
+        .all()
+    )
 
 
 

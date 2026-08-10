@@ -50,11 +50,11 @@ function ConfirmModal({ isOpen, title, message, details, onConfirm, onCancel, lo
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70]">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+      <div className="bg-card rounded-xl p-6 w-full max-w-md shadow-2xl">
         <h3 className="text-lg font-bold mb-2">{title}</h3>
         <p className="text-sm text-gray-600 mb-3">{message}</p>
         {details && (
-          <ul className="text-xs text-gray-500 space-y-1 mb-4 bg-gray-50 p-3 rounded-lg">
+          <ul className="text-xs text-muted-foreground space-y-1 mb-4 bg-muted p-3 rounded-lg">
             {details.map((d, i) => (
               <li key={i} className="flex items-center gap-2">
                 <span className="text-green-500">✓</span> {d}
@@ -66,7 +66,7 @@ function ConfirmModal({ isOpen, title, message, details, onConfirm, onCancel, lo
           <button
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-50"
+            className="px-4 py-2 border rounded text-sm hover:bg-muted disabled:opacity-50"
           >
             Cancel
           </button>
@@ -717,7 +717,7 @@ const handleAddItem = () => {
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-        <div className="bg-white p-8 rounded-xl shadow-xl text-center">
+        <div className="bg-card p-8 rounded-xl shadow-xl text-center">
           <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-600">Loading purchase...</p>
         </div>
@@ -729,7 +729,7 @@ const handleAddItem = () => {
     <>
       <div className="fixed inset-0 bg-black/40 flex justify-center items-start overflow-y-auto z-50 p-6">
         <div
-          className={`bg-white rounded-xl shadow-xl w-full max-w-7xl ${
+          className={`bg-card rounded-xl shadow-xl w-full max-w-7xl ${
             TYPE_STYLES[formData.purchase_type] || ""
           }`}
         >
@@ -760,7 +760,7 @@ const handleAddItem = () => {
             <button
               onClick={handleClose}
               disabled={isProcessing}
-              className="text-gray-500 hover:text-red-600 text-xl font-bold disabled:opacity-50"
+              className="text-muted-foreground hover:text-red-600 text-xl font-bold disabled:opacity-50"
             >
               ✕
             </button>
@@ -839,9 +839,9 @@ const handleAddItem = () => {
                       />
                       
                       {showClientDropdown && filteredClients.length > 0 && (
-                        <div className="absolute z-50 w-full bg-white border rounded-xl shadow-lg max-h-40 overflow-y-auto mt-1">
+                        <div className="absolute z-50 w-full bg-card border rounded-xl shadow-lg max-h-40 overflow-y-auto mt-1">
                           {clientsLoading ? (
-                            <div className="px-3 py-2 text-gray-500 text-sm">Loading clients...</div>
+                            <div className="px-3 py-2 text-muted-foreground text-sm">Loading clients...</div>
                           ) : (
                             filteredClients.map((c) => (
                               <div
@@ -865,7 +865,7 @@ const handleAddItem = () => {
                       )}
                       
                       {showClientDropdown && clientSearch && filteredClients.length === 0 && !clientsLoading && (
-                        <div className="absolute z-50 w-full bg-white border rounded-xl shadow-lg mt-1 p-3 text-sm text-gray-400 text-center">
+                        <div className="absolute z-50 w-full bg-card border rounded-xl shadow-lg mt-1 p-3 text-sm text-gray-400 text-center">
                           No clients found
                         </div>
                       )}
@@ -881,7 +881,7 @@ const handleAddItem = () => {
                       <label className="block text-sm font-medium mb-1 text-gray-400">GSTIN</label>
                       <input 
                         value={selectedSupplier.gstin || "N/A"} 
-                        className="w-full border rounded p-2 bg-gray-50 text-gray-600" 
+                        className="w-full border rounded p-2 bg-muted text-gray-600" 
                         disabled 
                       />
                     </div>
@@ -889,7 +889,7 @@ const handleAddItem = () => {
                       <label className="block text-sm font-medium mb-1 text-gray-400">State</label>
                       <input 
                         value={selectedSupplier.state || "N/A"} 
-                        className="w-full border rounded p-2 bg-gray-50 text-gray-600" 
+                        className="w-full border rounded p-2 bg-muted text-gray-600" 
                         disabled 
                       />
                     </div>
@@ -903,7 +903,7 @@ const handleAddItem = () => {
                       <label className="block text-sm font-medium mb-1 text-gray-400">Client GSTIN</label>
                       <input 
                         value={selectedClient.gstin || "N/A"} 
-                        className="w-full border rounded p-2 bg-gray-50 text-gray-600" 
+                        className="w-full border rounded p-2 bg-muted text-gray-600" 
                         disabled 
                       />
                     </div>
@@ -911,7 +911,7 @@ const handleAddItem = () => {
                       <label className="block text-sm font-medium mb-1 text-gray-400">Client State</label>
                       <input 
                         value={selectedClient.state || "N/A"} 
-                        className="w-full border rounded p-2 bg-gray-50 text-gray-600" 
+                        className="w-full border rounded p-2 bg-muted text-gray-600" 
                         disabled 
                       />
                     </div>
@@ -1116,7 +1116,7 @@ const handleAddItem = () => {
                 <tbody>
                   {items.length === 0 ? (
                     <tr>
-                      <td colSpan={isEditable ? 8 : 7} className="text-center py-8 text-gray-500">
+                      <td colSpan={isEditable ? 8 : 7} className="text-center py-8 text-muted-foreground">
                         No Products Added
                       </td>
                     </tr>
@@ -1125,7 +1125,7 @@ const handleAddItem = () => {
                       const serialCount = item.serial_numbers?.length || 0;
                       const isSerialComplete = serialCount === item.quantity;
                       return (
-                        <tr key={index} className="hover:bg-gray-50">
+                        <tr key={index} className="hover:bg-muted">
                           <td className="border p-2 font-medium">{item.model_no}</td>
                           <td className="border p-2 text-gray-600 text-xs">{item.description}</td>
                           <td className="border p-2 text-center">
@@ -1198,7 +1198,7 @@ const handleAddItem = () => {
                                 disabled={isProcessing}
                               />
                             ) : (
-                              <span className="text-xs text-gray-500">{item.remarks || "-"}</span>
+                              <span className="text-xs text-muted-foreground">{item.remarks || "-"}</span>
                             )}
                           </td>
                           {isEditable && (
@@ -1225,22 +1225,22 @@ const handleAddItem = () => {
               <div className="border rounded-lg p-4 flex-1 max-w-md">
                 <h4 className="font-semibold text-sm mb-3">Purchase Summary</h4>
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="text-gray-500">Products</div>
+                  <div className="text-muted-foreground">Products</div>
                   <div className="font-bold text-right">{items.length}</div>
-                  <div className="text-gray-500">Total Quantity</div>
+                  <div className="text-muted-foreground">Total Quantity</div>
                   <div className="font-bold text-right">{totalQuantity}</div>
-                  <div className="text-gray-500">Serial Managed</div>
+                  <div className="text-muted-foreground">Serial Managed</div>
                   <div className="font-bold text-right">{serialManaged}</div>
-                  <div className="text-gray-500">Serials Captured</div>
+                  <div className="text-muted-foreground">Serials Captured</div>
                   <div className={`font-bold text-right ${allSerialsDone ? "text-green-600" : "text-amber-600"}`}>
                     {totalSerials}/{totalQuantity}
                     {allSerialsDone && totalQuantity > 0 && <span className="ml-1">✅</span>}
                   </div>
-                  <div className="text-gray-500">Type</div>
+                  <div className="text-muted-foreground">Type</div>
                   <div className="font-bold text-right">{formData.purchase_type.replace(/_/g, " ")}</div>
                   {selectedSupplier && (
                     <>
-                      <div className="text-gray-500">Supplier</div>
+                      <div className="text-muted-foreground">Supplier</div>
                       <div className="font-bold text-right truncate">{selectedSupplier.company_name}</div>
                     </>
                   )}
@@ -1274,7 +1274,7 @@ const handleAddItem = () => {
             <button
               onClick={handleClose}
               disabled={isProcessing}
-              className="px-5 py-2 rounded border text-sm hover:bg-gray-50 disabled:opacity-50"
+              className="px-5 py-2 rounded border text-sm hover:bg-muted disabled:opacity-50"
             >
               Cancel
             </button>
@@ -1304,9 +1304,9 @@ const handleAddItem = () => {
         {/* Serial Number Modal */}
         {serialModal.open && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
-            <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+            <div className="bg-card rounded-xl p-6 w-full max-w-md shadow-2xl">
               <h3 className="font-bold text-lg mb-1">Enter Serial Numbers</h3>
-              <div className="text-xs text-gray-500 mb-1">
+              <div className="text-xs text-muted-foreground mb-1">
                 Model: <span className="font-bold text-gray-700">{items[serialModal.itemIndex]?.model_no}</span>
                 {" | "}Required: <span className="font-bold">{items[serialModal.itemIndex]?.quantity}</span>
                 {" | "}Entered:{" "}
@@ -1357,7 +1357,7 @@ const handleAddItem = () => {
                   onClick={() =>
                     setSerialModal({ open: false, itemIndex: null, tempSerials: [], duplicateError: null })
                   }
-                  className="px-4 py-2 border rounded text-sm hover:bg-gray-50"
+                  className="px-4 py-2 border rounded text-sm hover:bg-muted"
                 >
                   Cancel
                 </button>

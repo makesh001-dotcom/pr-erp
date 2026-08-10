@@ -11,7 +11,7 @@ import ClientForm from "../components/ClientForm";
 import { parseExcelHeaders } from "../utils/excelUtils";
 import API from "../api/client";
 import { exportToExcel } from "../utils/Export_Excel";
-import ParcelPrint from "../components/Parcelprint";
+import ParcelPrint from "../components/ParcelPrint";
 
 export default function ClientPage() {
   const [clients, setClients] = useState([]);
@@ -157,7 +157,7 @@ export default function ClientPage() {
       <span>
         {parts.map((part, i) =>
           part.toLowerCase() === query.toLowerCase() ? (
-            <mark key={i} className="bg-amber-200 text-gray-900 rounded-sm px-0.5 font-bold">
+            <mark key={i} className="bg-amber-200 text-foreground rounded-sm px-0.5 font-bold">
               {part}
             </mark>
           ) : (
@@ -176,8 +176,8 @@ export default function ClientPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Clients</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Clients</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             {total} client{total !== 1 ? "s" : ""} registered
           </p>
         </div>
@@ -190,7 +190,7 @@ export default function ClientPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="w-64 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-64 rounded-xl border border-gray-300 bg-card px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
       </div>
@@ -207,7 +207,7 @@ export default function ClientPage() {
           >
             + Add Client
           </button>
-          <label className="rounded-lg bg-white border border-gray-300 text-gray-700 px-4 py-2.5 text-sm font-semibold cursor-pointer hover:bg-gray-50 transition">
+          <label className="rounded-lg bg-card border border-gray-300 text-gray-700 px-4 py-2.5 text-sm font-semibold cursor-pointer hover:bg-muted transition">
             {importing ? "⏳ Importing..." : "📥 Import"}
             <input
               type="file"
@@ -219,7 +219,7 @@ export default function ClientPage() {
           </label>
           <button
             onClick={() => exportToExcel(clients, "Clients")}
-            className="rounded-lg bg-white border border-gray-300 text-gray-700 px-4 py-2.5 text-sm font-semibold hover:bg-gray-50 transition"
+            className="rounded-lg bg-card border border-gray-300 text-gray-700 px-4 py-2.5 text-sm font-semibold hover:bg-muted transition"
           >
             📤 Export
           </button>
@@ -244,11 +244,11 @@ export default function ClientPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border  border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-muted border-b  border-border text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 <th className="px-4 py-3 w-12">#</th>
                 <th className="px-4 py-3">Company</th>
                 <th className="px-4 py-3">Primary Contact</th>
@@ -286,7 +286,7 @@ export default function ClientPage() {
                         {(page - 1) * limit + index + 1}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-semibold text-gray-900">
+                        <div className="font-semibold text-foreground">
                           <Highlight text={c.company_name} query={search} />
                         </div>
                         {c.state && (
@@ -305,7 +305,7 @@ export default function ClientPage() {
                       <td className="px-4 py-3 text-gray-600">
                         {c.person1_phone || c.alternate_phone || "—"}
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs text-gray-500">
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                         {c.gstin || "—"}
                       </td>
                       <td className="px-4 py-3 text-center">
@@ -367,7 +367,7 @@ export default function ClientPage() {
                       <tr>
                         <td
                           colSpan={7}
-                          className="bg-gray-50 px-6 py-4 border-b border-gray-200"
+                          className="bg-muted px-6 py-4 border-b  border-border"
                         >
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                             <div>
@@ -382,10 +382,10 @@ export default function ClientPage() {
                               </span>
                               <p className="text-gray-700 mt-1">{c.person2_name || "—"}</p>
                               {c.person2_phone && (
-                                <p className="text-gray-500">{c.person2_phone}</p>
+                                <p className="text-muted-foreground">{c.person2_phone}</p>
                               )}
                               {c.person2_email && (
-                                <p className="text-gray-500">{c.person2_email}</p>
+                                <p className="text-muted-foreground">{c.person2_email}</p>
                               )}
                             </div>
                             <div>
@@ -396,7 +396,7 @@ export default function ClientPage() {
                                 {c.alternate_phone || "—"}
                               </p>
                               {c.alternate_email && (
-                                <p className="text-gray-500">{c.alternate_email}</p>
+                                <p className="text-muted-foreground">{c.alternate_email}</p>
                               )}
                             </div>
                             <div>
@@ -407,7 +407,7 @@ export default function ClientPage() {
                                 {c.website || "—"}
                               </p>
                               {c.remarks && (
-                                <p className="text-gray-500 mt-1 italic">
+                                <p className="text-muted-foreground mt-1 italic">
                                   "{c.remarks}"
                                 </p>
                               )}
@@ -430,7 +430,7 @@ export default function ClientPage() {
           <button
             disabled={page === 1}
             onClick={() => setPage(page - 1)}
-            className="px-4 py-2 text-sm border rounded-lg disabled:opacity-30 hover:bg-gray-50 transition"
+            className="px-4 py-2 text-sm border rounded-lg disabled:opacity-30 hover:bg-muted transition"
           >
             ← Prev
           </button>
@@ -446,7 +446,7 @@ export default function ClientPage() {
                   className={`w-9 h-9 text-sm rounded-lg transition ${
                     p === page
                       ? "bg-blue-600 text-white shadow-sm"
-                      : "border hover:bg-gray-50"
+                      : "border hover:bg-muted"
                   }`}
                 >
                   {p}
@@ -456,7 +456,7 @@ export default function ClientPage() {
           <button
             disabled={page >= totalPages}
             onClick={() => setPage(page + 1)}
-            className="px-4 py-2 text-sm border rounded-lg disabled:opacity-30 hover:bg-gray-50 transition"
+            className="px-4 py-2 text-sm border rounded-lg disabled:opacity-30 hover:bg-muted transition"
           >
             Next →
           </button>
@@ -473,9 +473,9 @@ export default function ClientPage() {
               setShowForm(false);
             }}
           />
-          <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-8 shadow-2xl">
+          <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border  border-border bg-card p-8 shadow-2xl">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-foreground">
                 {editingClient ? "Edit Client" : "New Client"}
               </h2>
               <button
@@ -501,19 +501,40 @@ export default function ClientPage() {
       )}
 
       {/* Print Modal */}
-      {selectedPrintClient && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-4xl rounded-2xl bg-white shadow-2xl p-6">
-            <ParcelPrint client={selectedPrintClient} />
-            <button
-              onClick={() => setSelectedPrintClient(null)}
-              className="mt-4 w-full rounded-xl bg-gray-900 text-white py-3 font-semibold hover:bg-black transition"
-            >
-              Close
-            </button>
-          </div>
+{selectedPrintClient && (
+  <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="w-full max-w-4xl rounded-2xl bg-card shadow-2xl p-6 relative flex flex-col max-h-[90vh]">
+      
+      {/* Action Bar with Print and Close Buttons */}
+      <div className="flex justify-between items-center mb-4 no-print">
+        <h2 className="text-lg font-bold">Shipping Label Preview</h2>
+        <div className="flex gap-2">
+          <button
+            onClick={() => window.print()}
+            className="bg-gray-900 text-white px-4 py-2 rounded-lg font-semibold hover:bg-black transition"
+          >
+            Print Label
+          </button>
+          <button
+            onClick={() => setSelectedPrintClient(null)}
+            className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+          >
+            Close
+          </button>
         </div>
-      )}
+      </div>
+
+      {/* Target Printable Wrapper */}
+      <div className="flex-1 overflow-auto bg-gray-100 p-4 rounded-xl border flex justify-center">
+        <div className="parcel-print-area">
+          <ParcelPrint client={selectedPrintClient} />
+        </div>
+      </div>
+
+    </div>
+  </div>
+)}
+      
     </div>
   );
 }

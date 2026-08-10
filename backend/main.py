@@ -18,10 +18,12 @@ from app.api.routes.sales import router as sales_router
 from app.api.routes.demo_tracking import router as demo_router
 from app.api.routes.analytics import router as analytics_router
 from app.api.routes.audit_log import router as audit_router
+from app.api.routes.delivery_challan import router as delivery_router
 # Example inside app/api/routes/auth.py or main.py
 from app.models.role import  Role
 from app.models.permission import Permission
 from app.models.role_permission import RolePermission
+
 
 app = FastAPI(title="Inventory rManagement API")
 
@@ -75,3 +77,4 @@ app.include_router(
 app.include_router(demo_router, prefix="/api/v1", tags=["Demo Tracking"])
 app.include_router(analytics_router, prefix="/api/v1", tags=["Analytics"])
 app.include_router(audit_router, prefix="/api/v1", tags=["Audit Logs"])
+app.include_router(delivery_router, prefix="/api/v1", tags=["Delivery Challans"])

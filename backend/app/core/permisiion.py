@@ -122,3 +122,13 @@ USER_VIEW = "users.view"
 USER_CREATE = "users.create"
 USER_UPDATE = "users.update"
 USER_DELETE = "users.delete"
+
+#=========================
+#Delviery challan
+#==========================
+
+DELIVERY_VIEW="delivery.view"
+DELIVERY_CREATE="delivery.create"
+DELIVERY_UPDATE="delivery.update"
+DELIVERY_DELETE="delivery.delete"
+DELIVERY_PRINT="delivery.print"

@@ -96,19 +96,19 @@ const filteredModels = models; // Already filtered by backend
         }}
         onFocus={() => setShowDropdown(true)}
         placeholder={loading ? "Loading..." : placeholder}
-        className={`w-full border rounded-lg p-2 text-sm ${error ? "border-red-500" : "border-gray-200"}`}
+        className={`w-full border rounded-lg p-2 text-sm ${error ? "border-red-500" : " border-border"}`}
         disabled={disabled}
       />
 
       {showDropdown && filteredModels.length > 0 && (
-        <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto mt-1">
+        <div className="absolute z-50 w-full bg-card border  border-border rounded-xl shadow-lg max-h-48 overflow-y-auto mt-1">
           {filteredModels.map((m) => (
             <div
               key={m.id}
               className="px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm flex justify-between items-center"
               onClick={() => handleSelect(m)}
             >
-              <span className="font-medium text-gray-900">{m.model_no}</span>
+              <span className="font-medium text-foreground">{m.model_no}</span>
               <span className="text-xs text-gray-400">
                 {m.current_stock !== undefined ? `Stock: ${m.current_stock}` : ""}
               </span>
@@ -118,7 +118,7 @@ const filteredModels = models; // Already filtered by backend
       )}
 
       {showDropdown && search && filteredModels.length === 0 && (
-        <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-xl shadow-lg mt-1 p-3 text-sm text-gray-400 text-center">
+        <div className="absolute z-50 w-full bg-card border  border-border rounded-xl shadow-lg mt-1 p-3 text-sm text-gray-400 text-center">
           No models found
         </div>
       )}

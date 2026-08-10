@@ -36,3 +36,9 @@ class Client(Base):
         "app.models.sales.SalesOutward",  # ← Full path as string
        back_populates="client"
     )
+
+    delivery_challans = relationship(
+        "DeliveryChallan", 
+        back_populates="client",
+        lazy="dynamic"
+    )

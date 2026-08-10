@@ -30,6 +30,7 @@ class ReferenceType(str, enum.Enum):
     WARRANTY = "WARRANTY"
     FOC = "FOC"
     DEMO = "DEMO"
+    DELIVERY_CHALLAN = "DELIVERY_CHALLAN"
 
 
 # --- CORE TABLES ---
@@ -160,3 +161,8 @@ class SerialNumber(Base):
 
     ledger_entry: Mapped["StockLedger"] = relationship("StockLedger", back_populates="serial_numbers")
     model: Mapped["Model"] = relationship("Model", back_populates="serial_numbers")
+
+
+
+
+

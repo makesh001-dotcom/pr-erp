@@ -25,3 +25,4 @@ from app.models.role_permission import RolePermission
 from app.models.client import Client
 from app.models.sales import SalesOutward
 from app.models.users import User
+

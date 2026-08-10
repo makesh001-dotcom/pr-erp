@@ -45,11 +45,11 @@ function ConfirmModal({ isOpen, title, message, details, onConfirm, onCancel, lo
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70]">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+      <div className="bg-card rounded-xl p-6 w-full max-w-md shadow-2xl">
         <h3 className="text-lg font-bold mb-2">{title}</h3>
         <p className="text-sm text-gray-600 mb-3">{message}</p>
         {details && (
-          <ul className="text-xs text-gray-500 space-y-1 mb-4 bg-gray-50 p-3 rounded-lg">
+          <ul className="text-xs text-muted-foreground space-y-1 mb-4 bg-muted p-3 rounded-lg">
             {details.map((d, i) => (
               <li key={i} className="flex items-center gap-2">
                 <span className="text-green-500">✓</span> {d}
@@ -61,7 +61,7 @@ function ConfirmModal({ isOpen, title, message, details, onConfirm, onCancel, lo
           <button
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-50"
+            className="px-4 py-2 border rounded text-sm hover:bg-muted disabled:opacity-50"
           >
             Cancel
           </button>
@@ -632,7 +632,7 @@ const handleModelSelect = (modelId) => {
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-        <div className="bg-white p-8 rounded-xl shadow-xl text-center">
+        <div className="bg-card p-8 rounded-xl shadow-xl text-center">
           <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-600">Loading sale...</p>
         </div>
@@ -643,7 +643,7 @@ const handleModelSelect = (modelId) => {
   return (
     <>
       <div className="fixed inset-0 bg-black/40 flex justify-center items-start overflow-y-auto z-50 p-6">
-        <div className={`bg-white rounded-xl shadow-xl w-full max-w-7xl ${TYPE_STYLES[formData.sales_type] || ""}`}>
+        <div className={`bg-card rounded-xl shadow-xl w-full max-w-7xl ${TYPE_STYLES[formData.sales_type] || ""}`}>
           {/* Header */}
           <div className="flex justify-between items-center border-b px-6 py-4">
             <div className="flex items-center gap-4">
@@ -664,7 +664,7 @@ const handleModelSelect = (modelId) => {
                 <span className="text-xs text-amber-600 font-medium">● Unsaved changes</span>
               )}
             </div>
-            <button onClick={handleClose} disabled={isProcessing} className="text-gray-500 hover:text-red-600 text-xl font-bold disabled:opacity-50">
+            <button onClick={handleClose} disabled={isProcessing} className="text-muted-foreground hover:text-red-600 text-xl font-bold disabled:opacity-50">
               ✕
             </button>
           </div>
@@ -672,7 +672,7 @@ const handleModelSelect = (modelId) => {
           {/* Body */}
           <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
             {/* Sale Details */}
-            <div className={`border rounded-lg p-5 ${isFreeOfCost ? "bg-gray-50/30 border-gray-300" : ""}`}>
+            <div className={`border rounded-lg p-5 ${isFreeOfCost ? "bg-muted/30 border-gray-300" : ""}`}>
               <h3 className="font-semibold text-lg mb-4">
                 Sale Information
                 {isFreeOfCost && <span className="text-gray-600 text-sm ml-2">⚠ Free of Cost - No billing</span>}
@@ -893,7 +893,7 @@ const handleModelSelect = (modelId) => {
                 <tbody>
                   {items.length === 0 ? (
                     <tr>
-                      <td colSpan={isEditable ? 8 : 7} className="text-center py-8 text-gray-500">
+                      <td colSpan={isEditable ? 8 : 7} className="text-center py-8 text-muted-foreground">
                         No Products Added
                       </td>
                     </tr>
@@ -902,7 +902,7 @@ const handleModelSelect = (modelId) => {
                       const serialCount = item.serial_numbers?.length || 0;
                       const isSerialComplete = serialCount === item.quantity;
                       return (
-                        <tr key={index} className="hover:bg-gray-50">
+                        <tr key={index} className="hover:bg-muted">
                           <td className="border p-2 font-medium">{item.model_no}</td>
                           <td className="border p-2 text-gray-600 text-xs">{item.description}</td>
                           <td className="border p-2 text-center">
@@ -958,7 +958,7 @@ const handleModelSelect = (modelId) => {
                                 disabled={isProcessing}
                               />
                             ) : (
-                              <span className="text-xs text-gray-500">{item.remarks || "-"}</span>
+                              <span className="text-xs text-muted-foreground">{item.remarks || "-"}</span>
                             )}
                           </td>
                           {isEditable && (
@@ -979,28 +979,28 @@ const handleModelSelect = (modelId) => {
               <div className="border rounded-lg p-4 flex-1 max-w-md">
                 <h4 className="font-semibold text-sm mb-3">Sale Summary</h4>
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="text-gray-500">Products</div>
+                  <div className="text-muted-foreground">Products</div>
                   <div className="font-bold text-right">{items.length}</div>
-                  <div className="text-gray-500">Total Quantity</div>
+                  <div className="text-muted-foreground">Total Quantity</div>
                   <div className="font-bold text-right">{totalQuantity}</div>
-                  <div className="text-gray-500">Serial Managed</div>
+                  <div className="text-muted-foreground">Serial Managed</div>
                   <div className="font-bold text-right">{serialManaged}</div>
-                  <div className="text-gray-500">Serials Captured</div>
+                  <div className="text-muted-foreground">Serials Captured</div>
                   <div className={`font-bold text-right ${allSerialsDone ? "text-green-600" : "text-amber-600"}`}>
                     {totalSerials}/{totalQuantity}
                     {allSerialsDone && totalQuantity > 0 && <span className="ml-1">✅</span>}
                   </div>
-                  <div className="text-gray-500">Type</div>
+                  <div className="text-muted-foreground">Type</div>
                   <div className="font-bold text-right">{formData.sales_type?.replace(/_/g, " ")}</div>
                   {selectedClient && (
                     <>
-                      <div className="text-gray-500">Client</div>
+                      <div className="text-muted-foreground">Client</div>
                       <div className="font-bold text-right truncate">{selectedClient.company_name || selectedClient.name}</div>
                     </>
                   )}
                   {selectedSupplier && (
                     <>
-                      <div className="text-gray-500">Supplier</div>
+                      <div className="text-muted-foreground">Supplier</div>
                       <div className="font-bold text-right truncate">{selectedSupplier.company_name}</div>
                     </>
                   )}
@@ -1031,7 +1031,7 @@ const handleModelSelect = (modelId) => {
 
           {/* Footer */}
           <div className="border-t px-6 py-4 flex justify-end gap-3">
-            <button onClick={handleClose} disabled={isProcessing} className="px-5 py-2 rounded border text-sm hover:bg-gray-50 disabled:opacity-50">
+            <button onClick={handleClose} disabled={isProcessing} className="px-5 py-2 rounded border text-sm hover:bg-muted disabled:opacity-50">
               Cancel
             </button>
             {isEditable && (
@@ -1050,9 +1050,9 @@ const handleModelSelect = (modelId) => {
         {/* Serial Number Modal */}
         {serialModal.open && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
-            <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+            <div className="bg-card rounded-xl p-6 w-full max-w-md shadow-2xl">
               <h3 className="font-bold text-lg mb-1">Enter Serial Numbers</h3>
-              <div className="text-xs text-gray-500 mb-1">
+              <div className="text-xs text-muted-foreground mb-1">
                 Model: <span className="font-bold text-gray-700">{items[serialModal.itemIndex]?.model_no}</span>
                 {" | "}Required: <span className="font-bold">{items[serialModal.itemIndex]?.quantity}</span>
                 {" | "}Entered: <span className="font-bold text-blue-600">{serialModal.tempSerials.filter((s) => s.trim() !== "").length}</span>
@@ -1089,7 +1089,7 @@ const handleModelSelect = (modelId) => {
               </div>
 
               <div className="flex justify-end gap-2 mt-4">
-                <button onClick={() => setSerialModal({ open: false, itemIndex: null, tempSerials: [], duplicateError: null })} className="px-4 py-2 border rounded text-sm hover:bg-gray-50">Cancel</button>
+                <button onClick={() => setSerialModal({ open: false, itemIndex: null, tempSerials: [], duplicateError: null })} className="px-4 py-2 border rounded text-sm hover:bg-muted">Cancel</button>
                 <button onClick={saveSerials} className="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">Save Serials</button>
               </div>
             </div>

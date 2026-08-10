@@ -14,7 +14,7 @@ import SupplierPage from "./pages/SupplierPage";
 import DemoTrackingPage from "./pages/DemoTrackingPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import AuditLogPage from "./pages/AuditLogPage"
-
+import DeliveryChallanPage from "./pages/DeliveryChallanPage";
 
 
 function App() {
@@ -38,12 +38,13 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="manufacturers" element={<Manufacturers />} />
-          <Route path="models" element={<Models />} />
+          <Route path="/model" element={<Models />} />
           <Route path="logout" element={<LogoutPage />} />
           <Route path="Quotation" element={<QuotationPage />} />
           <Route path="inventory" element={<InventoryContainer />} />
           <Route path="purchases" element={<PurchasePage />} />
           <Route path="sales" element={<SalesPage />} />
+          <Route path="delivery" element={<DeliveryChallanPage />}/>
           <Route path="/suppliers" element={<SupplierPage />} />
           <Route path="/demo-tracking" element={<DemoTrackingPage />} />
 

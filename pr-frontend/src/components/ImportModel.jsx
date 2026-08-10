@@ -63,7 +63,7 @@ export default function ImportModal({ fetchClients, setShowImportArea }) {
   return (
     <div className="p-4 border rounded shadow">
       <h3>Fast Import</h3>
-      <p className="text-sm text-gray-500">Upload your excel file to auto-sync clients.</p>
+      <p className="text-sm text-muted-foreground">Upload your excel file to auto-sync clients.</p>
       <input 
         type="file" 
         onChange={handleFileLoad} 

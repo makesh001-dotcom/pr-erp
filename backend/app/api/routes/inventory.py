@@ -94,7 +94,7 @@ db: Session = Depends(get_db)):
 @router.get("/inventory-summary")
 def get_inventory_summary(
     skip: int = Query(0, ge=0),
-    limit: int = Query(50, ge=1, le=200),
+    limit: int = Query(100, ge=1, le=200),
     search: Optional[str] = Query(None),
     product_group_id: Optional[int] = Query(None),
    current_user: User = Depends(
@@ -211,42 +211,48 @@ db: Session = Depends(get_db)):
         "message": f"Successfully committed all {processed_count} ledger rows seamlessly to your inventory tables."
     }
 
-
 @router.get("/model-search")
-def search_models(
-     q: Optional[str] = Query(None, min_length=1),
-    limit: int = Query(20, ge=1, le=50),
-    product_group_id: Optional[int] = None,
-    current_user: User = Depends(
+def model_search(
+    q: str = Query(..., min_length=1),
+    limit: int = Query(25),
+    product_group_id: Optional[int] = Query(None),
+    urrent_user: User = Depends(
     require_permission(INVENTORY_VIEW)
     ),
 db: Session = Depends(get_db)
 ):
-    """Search models by name, SKU, or description"""
-    query = db.query(Model)
+    """Search models with manufacturer data"""
+    
+    query = db.query(Model).options(
+        joinedload(Model.product_group).joinedload(ProductGroup.manufacturer)
+    )
     
     if q:
-        search_term = f"%{q}%"
-        query = query.filter(
-            or_(
-                Model.model_no.ilike(search_term),
-                Model.sku.ilike(search_term),
-                Model.description.ilike(search_term),
-            )
-        )
+        query = query.filter(Model.model_no.ilike(f"%{q}%"))
     
     if product_group_id:
         query = query.filter(Model.product_group_id == product_group_id)
     
-    models = query.order_by(Model.model_no).limit(limit).all()
+    models = query.limit(limit).all()
     
+    # Return with manufacturer info
     return [
         {
             "id": m.id,
             "model_no": m.model_no,
-            "sku": m.sku,
             "description": m.description,
+            "sku": m.sku,
             "price": float(m.price or 0),
+            "hsn_code": m.hsn_code,
+            "make": m.product_group.manufacturer.name if m.product_group and m.product_group.manufacturer else None,
+            "manufacturer": {
+                "id": m.product_group.manufacturer.id if m.product_group and m.product_group.manufacturer else None,
+                "name": m.product_group.manufacturer.name if m.product_group and m.product_group.manufacturer else None,
+            } if m.product_group and m.product_group.manufacturer else None,
+            "product_group": {
+                "id": m.product_group.id if m.product_group else None,
+                "name": m.product_group.name if m.product_group else None,
+            } if m.product_group else None,
         }
         for m in models
     ]

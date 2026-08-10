@@ -96,6 +96,14 @@ PERMISSION_REGISTRY = {
     "Profile": [
         "profile.change_password",
     ],
+
+    "delivery":[
+    "delivery.view",
+    "delivery.create",
+    "delivery.update",
+    "delivery.delete",
+    "delivery.print",
+    ],
 }
 
 STAFF_PERMISSIONS = {
@@ -156,4 +164,10 @@ STAFF_PERMISSIONS = {
 
     # Everyone can change their own password
     "profile.change_password",
+
+    "delivery.view",
+    "delivery.create",
+    "delivery.update",
+    "delivery.delete",
+    "delivery.print",
 }

@@ -105,7 +105,7 @@ export default function AnalyticsPage() {
       )}
 
       {/* Monthly Trend Chart */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <div className="bg-card rounded-xl border border-slate-200 shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-base font-semibold text-slate-900 tracking-tight">Performance Trend</h2>
           <div className="flex gap-4 text-xs font-medium text-slate-600">
@@ -156,13 +156,13 @@ export default function AnalyticsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sales by Type */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-card rounded-xl border border-slate-200 shadow-sm p-6">
           <h2 className="text-base font-semibold text-slate-900 tracking-tight mb-5">Sales Segment Distribution</h2>
           <div className="divide-y divide-slate-100">
             {salesByType.map((item) => (
               <div key={item.type} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-2 h-2 rounded-full bg-indigo-500 shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-primary-500 shrink-0"></div>
                   <span className="text-sm text-slate-600 truncate capitalize">{item.type?.replace(/_/g, " ")}</span>
                 </div>
                 <div className="text-right ml-4 shrink-0">
@@ -178,7 +178,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Top Products */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-card rounded-xl border border-slate-200 shadow-sm p-6">
           <h2 className="text-base font-semibold text-slate-900 tracking-tight mb-5">Top Performing Products</h2>
           <div className="divide-y divide-slate-100">
             {topProducts.map((p, i) => (
@@ -207,7 +207,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Low Stock Alerts */}
-      <div className="bg-white rounded-xl border border-red-100 shadow-sm p-6">
+      <div className="bg-card rounded-xl border border-red-100 shadow-sm p-6">
         <h2 className="text-base font-semibold text-red-900 tracking-tight mb-4 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w3.org/w4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-red-600">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
@@ -245,7 +245,7 @@ export default function AnalyticsPage() {
 // ================================
 function KPICard({ icon, label, value, sub, borderColor, iconColor }) {
   return (
-    <div className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 ${borderColor} flex flex-col justify-between min-w-0`}>
+    <div className={`bg-card rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 ${borderColor} flex flex-col justify-between min-w-0`}>
       <div>
         <div className="flex items-center justify-between gap-2 mb-3">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">{label}</span>

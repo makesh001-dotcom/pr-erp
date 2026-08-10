@@ -62,11 +62,11 @@ export default function PurchasePage() {
       </div>
 
       {/* Purchase List Table */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border overflow-hidden">
         {loading ? (
-          <p className="text-center py-8 text-gray-500">Loading purchases...</p>
+          <p className="text-center py-8 text-muted-foreground">Loading purchases...</p>
         ) : purchases.length === 0 ? (
-          <p className="text-center py-8 text-gray-500">
+          <p className="text-center py-8 text-muted-foreground">
             No purchases yet. Click "+ New Purchase" to create one.
           </p>
         ) : (
@@ -87,7 +87,7 @@ export default function PurchasePage() {
               {purchases.map((p) => (
                 <tr
                   key={p.id}
-                  className="hover:bg-gray-50 cursor-pointer"
+                  className="hover:bg-muted cursor-pointer"
                   onClick={() => p.status === "DRAFT" && handleEdit(p.id)}
                 >
                   <td className="p-3 font-medium">{p.purchase_no}</td>
@@ -98,7 +98,7 @@ export default function PurchasePage() {
                   </td>
                   <td className="p-3 text-right font-medium">₹{p.grand_total}</td>
                   <td className="p-3 text-center">{p.items?.length || 0}</td>
-                  <td className="p-3 text-xs text-gray-500">
+                  <td className="p-3 text-xs text-muted-foreground">
                     {new Date(p.created_at).toLocaleDateString()}
                   </td>
                   <td className="p-3 text-center">

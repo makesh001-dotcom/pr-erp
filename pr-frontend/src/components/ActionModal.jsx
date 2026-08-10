@@ -21,15 +21,15 @@ const ActionModal = ({ isOpen, onClose, type }) => {
       ></div>
 
       {/* Modal Card */}
-      <div className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-gray-100 p-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+      <div className="relative bg-card w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-gray-100 p-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
         
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+          <div className="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
             {active.icon}
           </div>
           <div>
-            <h2 className="text-2xl font-black text-gray-900">{active.title}</h2>
+            <h2 className="text-2xl font-black text-foreground">{active.title}</h2>
             <p className="text-sm text-gray-400">Fill in the details to update your inventory</p>
           </div>
         </div>
@@ -44,7 +44,7 @@ const ActionModal = ({ isOpen, onClose, type }) => {
               <input 
                 type="text" 
                 placeholder={`Enter ${field.toLowerCase()}...`}
-                className="w-full rounded-2xl border border-gray-100 bg-gray-50 px-5 py-4 text-sm outline-none focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all"
+                className="w-full rounded-2xl border border-gray-100 bg-muted px-5 py-4 text-sm outline-none focus:bg-card focus:ring-4 focus:ring-indigo-100 focus:border-primary-500 transition-all"
               />
             </div>
           ))}
@@ -54,13 +54,13 @@ const ActionModal = ({ isOpen, onClose, type }) => {
             <button 
               type="button"
               onClick={onClose}
-              className="flex-1 py-4 rounded-2xl text-sm font-bold text-gray-400 hover:bg-gray-50 transition"
+              className="flex-1 py-4 rounded-2xl text-sm font-bold text-gray-400 hover:bg-muted transition"
             >
               Cancel
             </button>
             <button 
               type="submit"
-              className="flex-[2] py-4 rounded-2xl bg-indigo-600 text-white text-sm font-bold shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition active:scale-95"
+              className="flex-[2] py-4 rounded-2xl bg-primary-600 text-white text-sm font-bold shadow-xl shadow-indigo-100 hover:bg-primary-700 transition active:scale-95"
             >
               Save Configuration
             </button>

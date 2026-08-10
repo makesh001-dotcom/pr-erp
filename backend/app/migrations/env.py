@@ -26,6 +26,7 @@ from app.models.audit_log import AuditLog
 from app.models.role import Role
 from app.models.permission import Permission
 from app.models.role_permission import RolePermission
+from app.models.delivery_challan import DeliveryChallan, DeliveryChallanItem, DeliveryChallanCounter
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

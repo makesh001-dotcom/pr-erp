@@ -4,15 +4,16 @@ const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 // ================================
 // Client CRUD
 // ================================
@@ -35,8 +36,11 @@ export const deactivateClient = (clientId) =>
 export const reactivateClient = (clientId) =>
   API.put(`/clients/${clientId}/reactivate`);
 
+// Matches: API.post("/auth/login") inside AuthProvider
+export const loginAPI = (data) => API.post("/auth/login", data);
 
-// Auth
-export const loginAPI = (data) => API.post("/login", data);
+// Matches: API.get("/auth/me") inside AuthProvider
+export const getCurrentUserAPI = () => API.get("/auth/me");
+
 
 export default API;

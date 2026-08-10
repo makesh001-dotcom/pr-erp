@@ -7,207 +7,511 @@ const ParcelPrint = ({ client }) => {
 
   if (!client) return null;
 
+  const today = new Date().toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+
   return (
     <div className="print-container">
-      {/* Interactive UI - Hidden on Print */}
+      {/* Interactive UI — Hidden on Print */}
       <div className="no-print actions-bar">
         <button onClick={handlePrintAction} className="print-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
           Print Shipping Label
         </button>
-        <p className="hint">Tip: Set "Margins" to "None" in the print dialog for best results.</p>
+        <p className="hint">
+          <strong>Pro Tip:</strong> Set print margins to "None" and disable headers/footers for best results.
+        </p>
       </div>
 
-      <div className="parcel-card">
-        {/* Header Section */}
-        <div className="label-header">
-          <div className="logo-area">
-            <h2>PR AUTOMATIONS</h2>
-            <span>Smart Industrial Solutions</span>
-          </div>
-          <div className="delivery-badge">PARCEL</div>
-        </div>
+      {/* === THE LABEL === */}
+      <div className="label-wrapper">
 
-        {/* FROM Section */}
-        <div className="address-section from-box">
-          <div className="side-label">FROM</div>
-          <div className="client-info">
-            <p className="full-address">
-              <strong>PR AUTOMATIONS</strong><br />
-              19/83, 1-A, near Rocky Gas Godown,<br />
-              Surya Nagar, Vellalore, TamilNadu - 641111
-            </p>
-            <p className="contact-small">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }}><path d="M20 15.5c-1.2 0-2.4-.2-3.6-.6-.3-.1-.7 0-1 .3l-2.2 2.2c-2.8-1.4-5.1-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.2-1-.3-1.1-.5-2.3-.5-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z"/></svg>
-              074181 23545 &nbsp;|&nbsp; 
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ display: 'inline', marginLeft: '6px', marginRight: '4px', verticalAlign: 'middle' }}><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-              info@prautomations.com
-            </p>
+        {/* Top Header Band */}
+        <div className="label-top-band">
+          <div className="brand-block">
+            <div className="brand-logo">PR</div>
+            <div className="brand-text">
+              <div className="brand-name">PR AUTOMATIONS</div>
+              <div className="brand-tag">Smart Industrial Solutions</div>
+            </div>
+          </div>
+          <div className="doc-meta">
+            <div className="doc-type">SHIPPING LABEL</div>
+            <div className="doc-date">{today}</div>
           </div>
         </div>
 
-        {/* TO Section */}
-        <div className="address-section to-box">
-          <div className="side-label">TO</div>
-          <div className="client-info">
-            <h1 className="company-name">{client.company_name}</h1>
-            <p className="attn-line"><strong>Attn:</strong> {client.person1_name}</p>
-            <p className="destination-address">{client.address}</p>
-            <p className="city-state">{client.state} - {client.pincode}</p>
-            <p className="phone-bold">Contact: {client.person1_phone}</p>
+        
+
+        {/* Main Content Grid */}
+        <div className="label-body">
+
+          {/* FROM (Sender) */}
+          <div className="addr-block from-block">
+            <div className="addr-label">
+              <span className="addr-label-icon">↗</span>
+              FROM / SENDER
+            </div>
+            <div className="addr-content">
+              <div className="addr-company">PR AUTOMATIONS</div>
+              <div className="addr-line">19/83, 1-A, Near Rocky Gas Godown</div>
+              <div className="addr-line">Surya Nagar, Vellalore</div>
+              <div className="addr-line">Tamil Nadu — 641111</div>
+              <div className="addr-contact">
+                <span className="contact-pill">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20 15.5c-1.2 0-2.4-.2-3.6-.6-.3-.1-.7 0-1 .3l-2.2 2.2c-2.8-1.4-5.1-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.2-1-.3-1.1-.5-2.3-.5-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z"/></svg>
+                  074181 23545
+                </span>
+                <span className="contact-pill">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                  info@prautomations.com
+                </span>
+              </div>
+            </div>
           </div>
+
+          {/* Divider */}
+          <div className="section-divider">
+            <div className="divider-line"></div>
+            <div className="divider-arrow">▼</div>
+            <div className="divider-line"></div>
+          </div>
+
+          {/* TO (Recipient) — The Hero Section */}
+          <div className="addr-block to-block">
+            <div className="addr-label to-label">
+              <span className="addr-label-icon">↙</span>
+              TO / RECIPIENT
+            </div>
+            <div className="addr-content">
+              <div className="to-company">{client.company_name}</div>
+              <div className="to-attn">
+                <span className="attn-tag">ATTN</span>
+                <span className="attn-name">{client.person1_name}</span>
+              </div>
+              <div className="to-address">{client.address}</div>
+              <div className="to-city">{client.state} — {client.pincode}</div>
+              <div className="to-phone">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '6px' }}><path d="M20 15.5c-1.2 0-2.4-.2-3.6-.6-.3-.1-.7 0-1 .3l-2.2 2.2c-2.8-1.4-5.1-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.2-1-.3-1.1-.5-2.3-.5-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z"/></svg>
+                {client.person1_phone}
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        {/* Footer Section */}
-        <div className="label-footer">
-          <div className="gst-details">
-            <span>RECIPIENT GST:</span> <strong>{client.gstin || 'NOT PROVIDED'}</strong>
+        {/* Bottom Info Strip */}
+        <div className="label-bottom-strip">
+          <div className="info-cell">
+            <div className="info-label">GSTIN</div>
+            <div className="info-value">{client.gstin || '—'}</div>
           </div>
+          
         </div>
+
+        {/* Tear-off Footer */}
+        <div className="tear-off">
+          <div className="tear-dots">
+            {[...Array(30)].map((_, i) => (
+              <div key={i} className="tear-dot" />
+            ))}
+          </div>
+          <div className="tear-text">✂ TEAR HERE</div>
+        </div>
+
       </div>
 
-      {/* FIXED: Removed the 'jsx' attribute entirely from the style element */}
+      {/* === STYLES === */}
       <style dangerouslySetInnerHTML={{ __html: `
-        /* 1. SCREEN STYLING */
-.print-container {
-  padding: 24px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #1a1a1a;
-}
-.actions-bar {
-  margin-bottom: 24px;
-  text-align: center;
-}
-.print-btn {
-  padding: 12px 28px;
-  background: #2563eb;
-  color: #fff;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
-  transition: all 0.2s;
-}
-.print-btn:hover { 
-  background: #1d4ed8; 
-  box-shadow: 0 6px 8px -1px rgba(29, 78, 216, 0.3);
-}
-.hint { font-size: 12px; color: #64748b; margin-top: 10px; }
+        /* ─── SCREEN ONLY ─── */
+        .print-container {
+          padding: 32px 16px;
+          font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          color: #0f172a;
+          background: #f1f5f9;
+          min-height: 100vh;
+        }
 
-.parcel-card {
-  width: 550px;
-  margin: 0 auto;
-  border: 4px solid #fff;
-  background: #fff;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-}
+        .actions-bar {
+          text-align: center;
+          margin-bottom: 32px;
+        }
+        .print-btn {
+          display: inline-flex;
+          align-items: center;
+          padding: 14px 32px;
+          background: #0f172a;
+          color: #fff;
+          border: none;
+          border-radius: 10px;
+          font-size: 15px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+          transition: all 0.2s ease;
+        }
+        .print-btn:hover {
+          background: #1e293b;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(15, 23, 42, 0.3);
+        }
+        .hint {
+          margin-top: 12px;
+          font-size: 13px;
+          color: #64748b;
+        }
 
-.label-header {
-  background: #000;
-  color: #fff;
-  padding: 18px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.logo-area h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; }
-.logo-area span { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; display: block; margin-top: 2px; }
-.delivery-badge {
-  border: 3px solid #fff;
-  padding: 6px 16px;
-  font-weight: 900;
-  font-size: 20px;
-  letter-spacing: 1px;
-}
+        /* ─── LABEL WRAPPER ─── */
+        .label-wrapper {
+          width: 600px;
+          margin: 0 auto;
+          background: #fff;
+          border-radius: 4px;
+          box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12);
+          overflow: hidden;
+        }
 
-.address-section {
-  display: flex;
-  padding: 20px;
-  gap: 20px;
-}
-.side-label {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-size: 11px;
-  font-weight: 800;
-  background: #000;
-  color: #fff;
-  padding: 6px 8px;
-  text-align: center;
-  letter-spacing: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: fit-content;
-}
+        /* ─── TOP BAND ─── */
+        .label-top-band {
+          background: #0f172a;
+          color: #fff;
+          padding: 16px 24px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .brand-block {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .brand-logo {
+          width: 40px;
+          height: 40px;
+          background: #fff;
+          color: #0f172a;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 900;
+          font-size: 16px;
+          letter-spacing: 1px;
+        }
+        .brand-name {
+          font-size: 18px;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+          line-height: 1.2;
+        }
+        .brand-tag {
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          opacity: 0.6;
+          margin-top: 2px;
+        }
+        .doc-meta {
+          text-align: right;
+        }
+        .doc-type {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 2px;
+          opacity: 0.7;
+          margin-bottom: 4px;
+        }
+        .doc-date {
+          font-size: 13px;
+          font-weight: 600;
+          opacity: 0.9;
+        }
 
-.from-box { 
-  background: #f8fafc; 
-  border-bottom: 2px dashed #000; 
-}
-.full-address { font-size: 14px; line-height: 1.5; margin: 0; color: #334155; }
-.full-address strong { color: #000; font-size: 15px; }
-.contact-small { font-size: 12px; color: #64748b; margin-top: 8px; margin-bottom: 0; display: flex; align-items: center; }
+        /* ─── BARCODE STRIP ─── */
+        .barcode-strip {
+          background: #f8fafc;
+          border-bottom: 1px solid #e2e8f0;
+          padding: 14px 24px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .barcode-visual {
+          flex: 1;
+        }
+        .barcode-lines {
+          display: flex;
+          align-items: flex-end;
+          height: 36px;
+          margin-bottom: 4px;
+        }
+        .barcode-line {
+          background: #0f172a;
+          height: 100%;
+          border-radius: 1px;
+        }
+        .barcode-number {
+          font-family: "Courier New", monospace;
+          font-size: 13px;
+          font-weight: 700;
+          letter-spacing: 2px;
+          color: #334155;
+        }
+        .parcel-badge {
+          background: #0f172a;
+          color: #fff;
+          padding: 8px 16px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 800;
+          font-size: 13px;
+          letter-spacing: 1px;
+        }
+        .badge-icon { font-size: 16px; }
 
-.to-box { padding-top: 20px; }
-.company-name { font-size: 32px; font-weight: 800; margin: 0 0 8px 0; color: #000; line-height: 1.1; text-transform: uppercase; }
-.attn-line { font-size: 15px; margin: 0 0 12px 0; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
-.destination-address { font-size: 18px; margin: 6px 0; font-weight: 500; line-height: 1.4; color: #000; }
-.city-state { font-size: 18px; font-weight: 700; margin-top: 4px; margin-bottom: 14px; color: #000; }
-.phone-bold { font-size: 16px; font-weight: 700; border: 2px solid #000; display: inline-block; padding: 4px 12px; margin: 0; background: #fff; }
+        /* ─── BODY ─── */
+        .label-body {
+          padding: 0;
+        }
 
-.label-footer {
-  border-top: 4px solid #000;
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  background: #f8fafc;
-}
-.gst-details { font-size: 13px; color: #1e293b; }
-.gst-details span { color: #64748b; font-weight: 600; font-size: 12px; margin-right: 4px; }
+        .addr-block {
+          padding: 20px 24px;
+        }
+        .addr-label {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 2px;
+          color: #64748b;
+          margin-bottom: 10px;
+          text-transform: uppercase;
+        }
+        .addr-label-icon {
+          font-size: 12px;
+          opacity: 0.5;
+        }
+        .to-label {
+          color: #0f172a;
+        }
 
-/* 2. ADVANCED PRINT ISOLATION RULES */
-@media print {
-  /* Hide every single element inside the body tag globally */
-  body * {
-    visibility: hidden !important;
-  }
-  
-  /* Forcefully make only our print container and its internal tree visible */
-  .print-container, .print-container * {
-    visibility: visible !important;
-  }
-  
-  /* Pull the print container to the absolute top-left corner of the page */
-  .print-container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
+        /* FROM block */
+        .from-block {
+          background: #f8fafc;
+        }
+        .addr-company {
+          font-size: 15px;
+          font-weight: 700;
+          color: #0f172a;
+          margin-bottom: 4px;
+        }
+        .addr-line {
+          font-size: 13px;
+          color: #475569;
+          line-height: 1.5;
+        }
+        .addr-contact {
+          margin-top: 10px;
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .contact-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-size: 11px;
+          color: #475569;
+          font-weight: 500;
+        }
 
-  /* Keep your internal interactive action bars completely invisible */
-  .no-print, .no-print * {
-    display: none !important;
-    visibility: hidden !important;
-  }
-  
-  .parcel-card { 
-    border: 4px solid #000; 
-    width: 100% !important; 
-    max-width: 100% !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-  }
+        /* Divider */
+        .section-divider {
+          display: flex;
+          align-items: center;
+          padding: 0 24px;
+          gap: 10px;
+        }
+        .divider-line {
+          flex: 1;
+          height: 1px;
+          background: #e2e8f0;
+        }
+        .divider-arrow {
+          font-size: 10px;
+          color: #94a3b8;
+        }
 
-  @page { 
-    size: auto; 
-    margin: 0mm; 
-  }
-}
+        /* TO block — THE HERO */
+        .to-block {
+          padding-top: 16px;
+          padding-bottom: 24px;
+        }
+        .to-company {
+          font-size: 28px;
+          font-weight: 900;
+          color: #0f172a;
+          line-height: 1.1;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: -0.5px;
+        }
+        .to-attn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+        .attn-tag {
+          background: #0f172a;
+          color: #fff;
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 1px;
+          padding: 3px 8px;
+          border-radius: 4px;
+        }
+        .attn-name {
+          font-size: 15px;
+          font-weight: 600;
+          color: #334155;
+        }
+        .to-address {
+          font-size: 16px;
+          font-weight: 500;
+          color: #1e293b;
+          line-height: 1.5;
+          margin-bottom: 4px;
+        }
+        .to-city {
+          font-size: 18px;
+          font-weight: 800;
+          color: #0f172a;
+          margin-bottom: 12px;
+        }
+        .to-phone {
+          display: inline-flex;
+          align-items: center;
+          background: #0f172a;
+          color: #fff;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+
+        /* ─── BOTTOM STRIP ─── */
+        .label-bottom-strip {
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+          border-top: 2px solid #0f172a;
+          background: #f8fafc;
+        }
+        .info-cell {
+          padding: 12px 16px;
+          border-right: 1px solid #e2e8f0;
+        }
+        .info-cell:last-child {
+          border-right: none;
+        }
+        .info-label {
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 1.5px;
+          color: #94a3b8;
+          margin-bottom: 4px;
+        }
+        .info-value {
+          font-size: 13px;
+          font-weight: 700;
+          color: #0f172a;
+          font-family: "Courier New", monospace;
+        }
+
+        /* ─── TEAR OFF ─── */
+        .tear-off {
+          background: #f1f5f9;
+          padding: 6px 24px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .tear-dots {
+          display: flex;
+          gap: 4px;
+          flex: 1;
+        }
+        .tear-dot {
+          width: 4px;
+          height: 4px;
+          background: #cbd5e1;
+          border-radius: 50%;
+        }
+        .tear-text {
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 2px;
+          color: #94a3b8;
+          white-space: nowrap;
+        }
+
+        /* ─── PRINT RULES ─── */
+        @media print {
+          @page {
+            size: auto;
+            margin: 0;
+          }
+
+          body * {
+            visibility: hidden !important;
+          }
+
+          .print-container, .print-container * {
+            visibility: visible !important;
+          }
+
+          .print-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: #fff !important;
+          }
+
+          .no-print, .no-print * {
+            display: none !important;
+            visibility: hidden !important;
+          }
+
+          .label-wrapper {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+          }
+
+          .tear-off {
+            display: none !important;
+          }
+        }
       ` }} />
     </div>
   );

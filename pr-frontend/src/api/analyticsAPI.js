@@ -1,10 +1,7 @@
 import axios from "axios";
 
 
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
+import API from "../api/client";
 
 export const getDashboardStats = () =>
   API.get("/api/v1/analytics/stats");

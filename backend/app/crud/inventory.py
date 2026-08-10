@@ -6,7 +6,11 @@ from fastapi import HTTPException, status
 from app.models.models import SerialNumber
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
+from app.models.manufacturer import Manufacturer
 from typing import List,Optional
+from sqlalchemy.orm import joinedload
+from app.models.product_group import ProductGroup
+
 
 def get_current_stock(db: Session, model_id: int) -> int:
     """
@@ -119,7 +123,9 @@ def get_inventory_summary_paginated(
     """Get paginated inventory with current stock"""
     
     # Base query
-    query = db.query(Model)
+    query = db.query(Model).options(
+    joinedload(Model.product_group).joinedload(ProductGroup.manufacturer)
+)
     
     # Search filter
     if search:
@@ -167,17 +173,24 @@ def get_inventory_summary_paginated(
         current_stock = inward - outward
         
         data.append({
-            "id": model.id,
-            "model_no": model.model_no,
-            "sku": model.sku,
-            "description": model.description,
-            "price": float(model.price or 0),
-            "current_stock": current_stock,
-            "product_group": {
-                "id": model.product_group.id if model.product_group else None,
-                "name": model.product_group.name if model.product_group else None,
-            } if model.product_group else None,
-        })
+    "id": model.id,
+    "model_no": model.model_no,
+    "sku": model.sku,
+    "description": model.description,
+    "price": float(model.price or 0),
+    "hsn_code": model.hsn_code,  # ⭐ Add HSN too
+    "current_stock": current_stock,
+    "product_group": {
+        "id": model.product_group.id if model.product_group else None,
+        "name": model.product_group.name if model.product_group else None,
+        "manufacturer": {  # ⭐ ADD THIS
+            "id": model.product_group.manufacturer.id if model.product_group and model.product_group.manufacturer else None,
+            "name": model.product_group.manufacturer.name if model.product_group and model.product_group.manufacturer else None,
+        } if model.product_group and model.product_group.manufacturer else None,
+    } if model.product_group else None,
+    # ⭐ Also add manufacturer directly at top level for easier access
+    "make": model.product_group.manufacturer.name if model.product_group and model.product_group.manufacturer else None,
+})
     
     return {
         "total": total,

@@ -48,7 +48,7 @@ db: Session = Depends(get_db),user=Depends(get_current_user)):
 @router.get("/", response_model=ProductGroupListResponse)
 def read_pgs(
     skip: int = Query(0, ge=0),
-    limit: int = Query(10, ge=1, le=100),
+    limit: int = Query(10, ge=1, le=300),
     current_user: User = Depends(
     require_permission(PRODUCT_GROUP_VIEW)
     ),

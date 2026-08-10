@@ -1,131 +1,729 @@
 @import "tailwindcss";
 
+/* Tailwind v4: make dark:* follow your data-theme toggle. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* =========================================================
+   ERP DESIGN SYSTEM
+   Clean, dense, professional, and built for data-heavy UIs.
+   ========================================================= */
+
+/* Fixed brand and status scales. */
+@theme {
+  /* Primary — confident enterprise blue */
+  --color-primary-50: oklch(0.970 0.014 254);
+  --color-primary-100: oklch(0.935 0.031 255);
+  --color-primary-200: oklch(0.878 0.060 254);
+  --color-primary-300: oklch(0.798 0.105 253);
+  --color-primary-400: oklch(0.700 0.155 255);
+  --color-primary-500: oklch(0.610 0.195 258);
+  --color-primary-600: oklch(0.535 0.215 261);
+  --color-primary-700: oklch(0.470 0.195 263);
+  --color-primary-800: oklch(0.405 0.160 264);
+  --color-primary-900: oklch(0.350 0.125 265);
+  --color-primary-950: oklch(0.235 0.075 266);
+
+  /* Success */
+  --color-success-50: oklch(0.975 0.025 160);
+  --color-success-100: oklch(0.945 0.055 158);
+  --color-success-500: oklch(0.655 0.155 154);
+  --color-success-600: oklch(0.565 0.145 154);
+  --color-success-700: oklch(0.480 0.120 155);
+
+  /* Warning */
+  --color-warning-50: oklch(0.985 0.025 86);
+  --color-warning-100: oklch(0.955 0.065 84);
+  --color-warning-500: oklch(0.770 0.165 72);
+  --color-warning-600: oklch(0.675 0.160 62);
+  --color-warning-700: oklch(0.570 0.145 52);
+
+  /* Danger */
+  --color-danger-50: oklch(0.975 0.018 22);
+  --color-danger-100: oklch(0.940 0.045 24);
+  --color-danger-500: oklch(0.640 0.220 27);
+  --color-danger-600: oklch(0.575 0.225 27);
+  --color-danger-700: oklch(0.500 0.195 27);
+
+  /* Information */
+  --color-info-50: oklch(0.975 0.018 235);
+  --color-info-100: oklch(0.940 0.045 235);
+  --color-info-500: oklch(0.665 0.150 236);
+  --color-info-600: oklch(0.585 0.155 239);
+  --color-info-700: oklch(0.500 0.135 241);
+
+  /* Print / quotation brand */
+  --color-pr-blue: #1f497d;
+}
+
+/* Runtime semantic tokens exposed as Tailwind utilities. */
+@theme inline {
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-code);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-muted: var(--surface-muted);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --shadow-card: var(--elevation-card);
+  --shadow-popover: var(--elevation-popover);
+}
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
 :root {
-  /* Your original color variables preserved */
-  --text: #000000;
-  --text-h: #08060d;
-  --bg: #751717;
-  --border: #FFF6DE;
-  --code-bg: #FFF6DE;
-  --accent: #aa3bff;
-  --accent-bg: #000000;
-  --accent-border: #000000;
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.979) 0 10px 15px -3px, #080000 0 4px 6px -2px;
+  color-scheme: light;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Typography */
+  --font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-code: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 
-  /* Your original font baselines preserved */
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* App shell */
+  --background: oklch(0.982 0.004 250);
+  --foreground: oklch(0.205 0.022 255);
+
+  /* Surfaces */
+  --surface: oklch(0.982 0.004 250);
+  --surface-raised: oklch(1 0 0);
+  --surface-subtle: oklch(0.967 0.006 250);
+  --surface-muted: oklch(0.945 0.009 250);
+
+  --card: var(--surface-raised);
+  --card-foreground: var(--foreground);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--foreground);
+
+  /* Actions */
+  --primary: var(--color-primary-600);
+  --primary-foreground: oklch(0.990 0 0);
+  --secondary: oklch(0.950 0.010 252);
+  --secondary-foreground: oklch(0.275 0.030 258);
+  --muted: var(--surface-subtle);
+  --muted-foreground: oklch(0.505 0.025 255);
+  --accent: oklch(0.925 0.030 255);
+  --accent-foreground: oklch(0.320 0.105 260);
+  --destructive: var(--color-danger-600);
+  --destructive-foreground: oklch(0.990 0 0);
+
+  /* Controls */
+  --border: oklch(0.895 0.012 250);
+  --input: oklch(0.865 0.015 250);
+  --ring: var(--color-primary-500);
+
+  /* Status */
+  --success: var(--color-success-700);
+  --success-foreground: oklch(0.985 0 0);
+  --success-soft: var(--color-success-50);
+  --warning: var(--color-warning-700);
+  --warning-foreground: oklch(0.245 0.045 60);
+  --warning-soft: var(--color-warning-50);
+  --danger: var(--color-danger-600);
+  --danger-foreground: oklch(0.985 0 0);
+  --danger-soft: var(--color-danger-50);
+  --info: var(--color-info-700);
+  --info-foreground: oklch(0.985 0 0);
+  --info-soft: var(--color-info-50);
+
+  /* Dark navy navigation gives an ERP a clear visual hierarchy. */
+  --sidebar: oklch(0.230 0.035 260);
+  --sidebar-foreground: oklch(0.935 0.010 255);
+  --sidebar-primary: oklch(0.690 0.145 252);
+  --sidebar-primary-foreground: oklch(0.180 0.030 260);
+  --sidebar-accent: oklch(0.305 0.042 260);
+  --sidebar-accent-foreground: oklch(0.975 0.005 255);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.700 0.145 252);
+
+  /* Charts */
+  --chart-1: oklch(0.590 0.190 258);
+  --chart-2: oklch(0.630 0.145 165);
+  --chart-3: oklch(0.720 0.155 75);
+  --chart-4: oklch(0.610 0.170 305);
+  --chart-5: oklch(0.650 0.180 25);
+
+  /* Shape and depth */
+  --radius: 0.5rem;
+  --elevation-card:
+    0 1px 2px oklch(0.20 0.02 255 / 5%),
+    0 8px 24px oklch(0.20 0.02 255 / 6%);
+  --elevation-popover:
+    0 12px 32px oklch(0.20 0.02 255 / 14%),
+    0 2px 8px oklch(0.20 0.02 255 / 8%);
+
+  /* Compatibility aliases for old custom CSS. */
+  --text: var(--foreground);
+  --text-h: oklch(0.155 0.025 255);
+  --bg: var(--background);
+  --code-bg: var(--surface-muted);
+  --brand: var(--primary);
+  --accent-bg: var(--accent);
+  --accent-border: oklch(0.800 0.070 255);
+  --social-bg: oklch(0.955 0.007 250 / 80%);
+  --shadow: var(--elevation-card);
 }
 
+/* =========================================================
+   DARK THEME - Sleek Charcoal / Minimalist Monochromatic
+   ========================================================= */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* App Canvas (Deepest Level - #0C0C0F) */
+  --background: #0c0c0f;
+  --foreground: #f4f4f5;
+
+  /* Surfaces & Cards (#18181A) */
+  --surface: #0c0c0f;
+  --surface-raised: #18181a;
+  --surface-subtle: #29292b;
+  --surface-muted: #38383a;
+
+  --card: #18181a;
+  --card-foreground: #f4f4f5;
+  --popover: #18181a;
+  --popover-foreground: #f4f4f5;
+
+  /* Actions & Brand Accents */
+  --primary: #38383a; /* Subtle neutral primary, or keep brand blue */
+  --primary-foreground: #ffffff;
+  --secondary: #29292b;
+  --secondary-foreground: #f4f4f5;
+  --muted: #18181a;
+  --muted-foreground: #a1a1aa;
+  --accent: #29292b;
+  --accent-foreground: #ffffff;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #fef2f2;
+
+  /* Controls & Division Lines (#29292B / #38383A) */
+  --border: #29292b;
+  --input: #29292b;
+  --ring: #4c4c4e;
+
+  /* Status Colors (Subdued tones so they don't break the sleek aesthetic) */
+  --success: #22c55e;
+  --success-foreground: #052e16;
+  --success-soft: rgba(34, 197, 94, 0.12);
+  --warning: #f59e0b;
+  --warning-foreground: #451a03;
+  --warning-soft: rgba(245, 158, 11, 0.12);
+  --danger: #ef4444;
+  --danger-foreground: #450a0a;
+  --danger-soft: rgba(239, 68, 68, 0.12);
+  --info: #3b82f6;
+  --info-foreground: #172554;
+  --info-soft: rgba(59, 130, 246, 0.12);
+
+  /* Sidebar Isolation (#0C0C0F -> #18181A) */
+  --sidebar: #0c0c0f;
+  --sidebar-foreground: #e4e4e7;
+  --sidebar-primary: #f4f4f5;
+  --sidebar-primary-foreground: #0c0c0f;
+  --sidebar-accent: #18181a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #29292b;
+  --sidebar-ring: #4c4c4e;
+
+  /* Charts */
+  --chart-1: #e4e4e7;
+  --chart-2: #a1a1aa;
+  --chart-3: #71717a;
+  --chart-4: #52525b;
+  --chart-5: #3f3f46;
+
+  /* Elevation Shadows */
+  --elevation-card:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 8px 24px rgba(0, 0, 0, 0.6);
+  --elevation-popover:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 16px 36px rgba(0, 0, 0, 0.8);
+
+  --text-h: #ffffff;
+  --code-bg: #18181a;
+  --brand: var(--primary);
+  --accent-bg: var(--accent);
+  --accent-border: #38383a;
+  --shadow: var(--elevation-card);
+}
+/* Use the OS theme only when the user has not chosen one manually. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --text: #000000;
-    --text-h: #05183f;
-    --bg: #d4d3d3;
-    --border: #000000;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.155 0.014 255);
+    --foreground: oklch(0.925 0.010 250);
+    --surface: oklch(0.155 0.014 255);
+    --surface-raised: oklch(0.195 0.017 255);
+    --surface-subtle: oklch(0.220 0.018 255);
+    --surface-muted: oklch(0.255 0.020 255);
+    --card: var(--surface-raised);
+    --card-foreground: var(--foreground);
+    --popover: oklch(0.205 0.018 255);
+    --popover-foreground: var(--foreground);
+    --primary: oklch(0.700 0.155 255);
+    --primary-foreground: oklch(0.175 0.040 260);
+    --secondary: oklch(0.255 0.020 255);
+    --secondary-foreground: oklch(0.925 0.010 250);
+    --muted: oklch(0.225 0.018 255);
+    --muted-foreground: oklch(0.690 0.020 250);
+    --accent: oklch(0.275 0.045 258);
+    --accent-foreground: oklch(0.940 0.020 250);
+    --destructive: oklch(0.665 0.195 25);
+    --destructive-foreground: oklch(0.985 0 0);
+    --border: oklch(0.330 0.018 255 / 75%);
+    --input: oklch(0.350 0.020 255 / 85%);
+    --ring: oklch(0.700 0.155 255);
+    --success: oklch(0.735 0.145 155);
+    --success-foreground: oklch(0.165 0.035 155);
+    --success-soft: oklch(0.735 0.145 155 / 13%);
+    --warning: oklch(0.800 0.150 78);
+    --warning-foreground: oklch(0.205 0.045 65);
+    --warning-soft: oklch(0.800 0.150 78 / 14%);
+    --danger: oklch(0.715 0.190 25);
+    --danger-foreground: oklch(0.175 0.040 25);
+    --danger-soft: oklch(0.715 0.190 25 / 13%);
+    --info: oklch(0.745 0.125 235);
+    --info-foreground: oklch(0.170 0.040 240);
+    --info-soft: oklch(0.745 0.125 235 / 13%);
+    --sidebar: oklch(0.125 0.016 258);
+    --sidebar-foreground: oklch(0.900 0.012 250);
+    --sidebar-primary: oklch(0.700 0.155 255);
+    --sidebar-primary-foreground: oklch(0.165 0.035 260);
+    --sidebar-accent: oklch(0.220 0.030 258);
+    --sidebar-accent-foreground: oklch(0.950 0.010 250);
+    --sidebar-border: oklch(1 0 0 / 8%);
+    --sidebar-ring: oklch(0.700 0.155 255);
+    --chart-1: oklch(0.700 0.155 255);
+    --chart-2: oklch(0.735 0.145 155);
+    --chart-3: oklch(0.800 0.150 78);
+    --chart-4: oklch(0.735 0.145 305);
+    --chart-5: oklch(0.715 0.190 25);
+    --elevation-card: 0 1px 0 oklch(1 0 0 / 4%) inset, 0 12px 28px oklch(0 0 0 / 22%);
+    --elevation-popover: 0 1px 0 oklch(1 0 0 / 5%) inset, 0 20px 44px oklch(0 0 0 / 42%);
+    --text-h: oklch(0.975 0.006 250);
+    --code-bg: var(--surface-muted);
+    --brand: var(--primary);
+    --accent-bg: var(--accent);
+    --accent-border: oklch(0.620 0.100 255 / 65%);
+    --social-bg: oklch(0.250 0.018 255 / 70%);
+    --shadow: var(--elevation-card);
+  }
+}
+
+/* =========================================================
+   BASE STYLES
+   ========================================================= */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+    border-color: var(--border);
   }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+  html {
+    min-width: 320px;
+    min-height: 100%;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-ui);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100svh;
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100svh;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    color: var(--foreground);
+    font-family: var(--font-ui);
+    font-weight: 650;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(1.625rem, 1.35rem + 0.8vw, 2.125rem);
+    letter-spacing: -0.035em;
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 1.12rem + 0.35vw, 1.5rem);
+    letter-spacing: -0.025em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    letter-spacing: -0.012em;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre,
+  .counter {
+    font-family: var(--font-code);
+  }
+
+  code,
+  kbd {
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) - 2px);
+    background: var(--surface-muted);
+    color: var(--foreground);
+    font-size: 0.8125rem;
+  }
+
+  code {
+    padding: 0.125rem 0.375rem;
+  }
+
+  kbd {
+    padding: 0.125rem 0.35rem;
+    box-shadow: 0 1px 0 var(--border);
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 24%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--ring) 85%, transparent);
+    outline-offset: 2px;
+  }
+
+  ::placeholder {
+    color: var(--muted-foreground);
+    opacity: 0.8;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  a {
+    color: var(--primary);
+    text-underline-offset: 3px;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Ensure inputs, select boxes, and options inherit proper dark mode text */
+input,
+textarea,
+select {
+  color: var(--foreground);
+  background-color: var(--surface-subtle);
+  border-color: var(--border);
+}
+
+/* Force native <option> elements to render with correct dark background and light text */
+select option {
+  background-color: var(--card);
+  color: var(--foreground);
+}
+
+/* Fix browser date picker calendar icons in dark mode */
+:root[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.9);
+  cursor: pointer;
+}
+}
+
+/* =========================================================
+   SMALL ERP PRIMITIVES
+   Optional helpers for repeated app patterns.
+   ========================================================= */
+@layer components {
+  .erp-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    color: var(--card-foreground);
+    box-shadow: var(--elevation-card);
+  }
+
+  .erp-toolbar {
+    display: flex;
+    min-height: 3.25rem;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in oklab, var(--card) 92%, transparent);
+    padding: 0.625rem 1rem;
+    backdrop-filter: blur(12px);
+  }
+
+  .erp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .erp-table th {
+    height: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-subtle);
+    color: var(--muted-foreground);
+    padding: 0 0.75rem;
+    text-align: left;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+
+  .erp-table td {
+    height: 2.75rem;
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    vertical-align: middle;
+  }
+
+  .erp-table tbody tr {
+    transition: background-color 120ms ease;
+  }
+
+  .erp-table tbody tr:hover {
+    background: var(--accent);
+  }
+
+  .status-badge {
+    display: inline-flex;
+    min-height: 1.5rem;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 650;
+    line-height: 1;
+  }
+
+  .status-success {
+    background: var(--success-soft);
+    color: var(--success);
+  }
+
+  .status-warning {
+    background: var(--warning-soft);
+    color: var(--warning);
+  }
+
+  .status-danger {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  .status-info {
+    background: var(--info-soft);
+    color: var(--info);
   }
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+/* =========================================================
+   LEGACY TAILWIND COMPATIBILITY
+   Keeps existing gray/white-heavy screens usable while you
+   gradually migrate to semantic utilities such as bg-card,
+   bg-muted, text-foreground, and text-muted-foreground.
+   ========================================================= */
+@layer utilities {
+  .bg-white {
+    background-color: var(--card);
+  }
+
+  .bg-gray-50 {
+    background-color: var(--surface-subtle);
+  }
+
+  .bg-gray-100 {
+    background-color: var(--surface-muted);
+  }
+
+  .text-gray-900,
+  .text-gray-800 {
+    color: var(--foreground);
+  }
+
+  .text-gray-700,
+  .text-gray-600 {
+    color: color-mix(in oklab, var(--foreground) 82%, var(--muted-foreground));
+  }
+
+  .text-gray-500 {
+    color: var(--muted-foreground);
+  }
+
+  .text-gray-400 {
+    color: color-mix(in oklab, var(--muted-foreground) 72%, transparent);
+  }
+
+  .border-gray-100,
+  .border-gray-200 {
+    border-color: var(--border);
+  }
+
+  .divide-gray-100 > * + *,
+  .divide-gray-200 > * + * {
+    border-color: var(--border);
+  }
+
+  .hover\:bg-gray-50:hover,
+  .hover\:bg-gray-100:hover {
+    background-color: var(--accent);
+  }
 }
 
-/* 
-  CORRECT FULL-WIDTH LAYOUT FOR ERP
-  Removed: fixed width (1126px), margin centering, text-align: center, and border-inline.
-  This allows both Login and MainLayout to work perfectly without forcing layout compression.
-*/
-#root {
-  width: 100%;
-  min-height: 100svh;
-  box-sizing: border-box;
-}
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+@keyframes enter-softly {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.99);
+  }
 
-/* Your original typography constraints safely written without nested media queries */
-h1, h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-}
-
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-}
-
-@media (max-width: 1024px) {
-  :root { font-size: 16px; }
-  h1 { font-size: 36px; margin: 20px 0; }
-  h2 { font-size: 20px; }
-}
-
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
-
-@keyframes zoom-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .animate-in {
-  animation: zoom-in 0.3s ease-out forwards;
+  animation: enter-softly 180ms ease-out both;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
 @page {
   size: A4;
   margin: 8mm;
 }
 
 @media print {
+  :root {
+    color-scheme: light;
+    --background: white;
+    --foreground: #111827;
+    --card: white;
+    --card-foreground: #111827;
+    --border: #d1d5db;
+    --muted: #f3f4f6;
+    --muted-foreground: #4b5563;
+  }
+
   body {
     background: white !important;
+    color: #111827 !important;
+    font-size: 10pt;
   }
 
   .no-print {
@@ -137,6 +735,11 @@ code {
     min-height: auto !important;
     margin: 0 !important;
     padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .erp-card {
     box-shadow: none !important;
   }
 
@@ -145,3 +748,196 @@ code {
     print-color-adjust: exact !important;
   }
 }
+@media screen {
+  .bg-white { background-color: var(--bg) !important; }
+  .bg-gray-50 { background-color: var(--code-bg) !important; }}
+
+
+/* =========================================================
+   DOCUMENT / PRINT FORM ISOLATION
+   Forces fixed, traditional light-theme colors for documents
+   regardless of screen dark mode settings.
+   ========================================================= */
+
+.quotation-sheet,
+.delivery-challan-sheet {
+  /* /* Lock color scheme to light regardless of data-theme="dark"  */
+  color-scheme: light !important;
+
+  /* /* Re-bind local variables to fixed brand & paper values  */
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --border: #d1d5db;
+  --surface-subtle: #f9fafb;
+  --muted-foreground: #4b5563;
+
+  /* /* Explicitly apply the locked colors */
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* /* Ensure child elements inside documents use fixed light utilities  */
+.quotation-sheet .bg-white,
+.delivery-challan-sheet .bg-white {
+  background-color: #ffffff !important;
+}
+
+.quotation-sheet .bg-gray-50,
+.delivery-challan-sheet .bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+.quotation-sheet .text-gray-900,
+.delivery-challan-sheet .text-gray-900 {
+  color: #111827 !important;
+}
+
+.quotation-sheet .text-gray-600,
+.delivery-challan-sheet .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+/* /* Preserve your custom print brand blue explicitly  */
+.brand-header-pr {
+  background-color: var(--color-pr-blue) !important;
+  color: #ffffff !important;
+}
+
+/* /* sample 1 
+.quotation-sheet,
+.delivery-challan-sheet {
+  color-scheme: light !important;
+
+  /* /* Theme Variables  
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #cbd5e1;
+  --surface-subtle: #f0f4f8;
+  --muted-foreground: #475569;
+  --color-pr-blue: #1e3a8a;
+
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+ /* Utilities Overrides  
+.quotation-sheet .bg-white,
+.delivery-challan-sheet .bg-white {
+  background-color: #ffffff !important;
+}
+
+.quotation-sheet .bg-gray-50,
+.delivery-challan-sheet .bg-gray-50 {
+  background-color: #f0f4f8 !important;
+}
+
+.quotation-sheet .text-gray-900,
+.delivery-challan-sheet .text-gray-900 {
+  color: #0f172a !important;
+}
+
+.quotation-sheet .text-gray-600,
+.delivery-challan-sheet .text-gray-600 {
+  color: #475569 !important;
+}
+
+.brand-header-pr {
+  background-color: var(--color-pr-blue) !important;
+  color: #ffffff !important;
+}
+ */
+
+/* sample 2
+.quotation-sheet,
+.delivery-challan-sheet {
+  color-scheme: light !important;
+
+  /* Theme Variables 
+  --background: #ffffff;
+  --foreground: #064e3b;
+  --card: #ffffff;
+  --card-foreground: #064e3b;
+  --border: #bbf7d0;
+  --surface-subtle: #f0fdf4;
+  --muted-foreground: #374151;
+  --color-pr-blue: #047857;
+
+  background-color: #ffffff !important;
+  color: #064e3b !important;
+}
+
+/* Utilities Overrides 
+.quotation-sheet .bg-white,
+.delivery-challan-sheet .bg-white {
+  background-color: #ffffff !important;
+}
+
+.quotation-sheet .bg-gray-50,
+.delivery-challan-sheet .bg-gray-50 {
+  background-color: #f0fdf4 !important;
+}
+
+.quotation-sheet .text-gray-900,
+.delivery-challan-sheet .text-gray-900 {
+  color: #064e3b !important;
+}
+
+.quotation-sheet .text-gray-600,
+.delivery-challan-sheet .text-gray-600 {
+  color: #374151 !important;
+}
+
+.brand-header-pr {
+  background-color: var(--color-pr-blue) !important;
+  color: #ffffff !important;
+}
+*/
+
+/* sample 3
+.quotation-sheet,
+.delivery-challan-sheet {
+  color-scheme: light !important;
+
+  /* Theme Variables 
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --border: #e5e7eb;
+  --surface-subtle: #f3f4f6;
+  --muted-foreground: #4b5563;
+  --color-pr-blue: #1f2937;
+
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* Utilities Overrides 
+.quotation-sheet .bg-white,
+.delivery-challan-sheet .bg-white {
+  background-color: #ffffff !important;
+}
+
+.quotation-sheet .bg-gray-50,
+.delivery-challan-sheet .bg-gray-50 {
+  background-color: #f3f4f6 !important;
+}
+
+.quotation-sheet .text-gray-900,
+.delivery-challan-sheet .text-gray-900 {
+  color: #111827 !important;
+}
+
+.quotation-sheet .text-gray-600,
+.delivery-challan-sheet .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+.brand-header-pr {
+  background-color: var(--color-pr-blue) !important;
+  color: #ffffff !important;
+}
+*/

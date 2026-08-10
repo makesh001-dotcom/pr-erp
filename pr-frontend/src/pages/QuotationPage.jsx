@@ -128,14 +128,14 @@ export default function QuotationPage() {
   // RENDER
   // ================================
   return (
-    <div className="bg-gray-50 min-h-screen p-6 text-black print:bg-white print:p-0">
+    <div className="bg-muted min-h-screen p-6 text-black print:bg-card print:p-0">
       {/* Main Content - Hidden during print */}
       <div className="print:hidden max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-2xl border  border-border shadow-sm">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Quotations</h2>
-            <p className="text-gray-500 text-sm mt-1">
+            <h2 className="text-2xl font-bold text-foreground">Quotations</h2>
+            <p className="text-muted-foreground text-sm mt-1">
               {totalCount} quotation{totalCount !== 1 ? "s" : ""} in system
             </p>
           </div>
@@ -151,13 +151,13 @@ export default function QuotationPage() {
         </div>
 
         {/* Search & Table */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-card rounded-2xl border  border-border shadow-sm overflow-hidden">
           {/* Search Bar */}
-          <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+          <div className="p-4 border-b border-gray-100 bg-muted/50">
             <input
               type="text"
               placeholder="Search by client name, company, or quotation number..."
-              className="w-full md:w-1/3 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 transition"
+              className="w-full md:w-1/3 border  border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 transition"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -167,7 +167,7 @@ export default function QuotationPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <tr className="bg-muted border-b  border-border text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   <th className="px-4 py-3">Reference No</th>
                   <th className="px-4 py-3">Company</th>
                   <th className="px-4 py-3">Contact</th>
@@ -194,7 +194,7 @@ export default function QuotationPage() {
                   </tr>
                 ) : (
                   quotations.map((q) => (
-                    <tr key={q.id} className="hover:bg-gray-50/50 transition font-medium">
+                    <tr key={q.id} className="hover:bg-muted/50 transition font-medium">
                       <td className="px-4 py-3">
                         <span className="font-bold text-indigo-900">{q.quotation_no}</span>
                         <span className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded ml-1.5">
@@ -202,8 +202,8 @@ export default function QuotationPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-gray-700">{q.company_name || "—"}</td>
-                      <td className="px-4 py-3 text-gray-500">{q.client_name || "—"}</td>
-                      <td className="px-4 py-3 text-right font-semibold text-gray-900">
+                      <td className="px-4 py-3 text-muted-foreground">{q.client_name || "—"}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-foreground">
                         ₹{Number(q.grand_total || 0).toLocaleString("en-IN")}
                       </td>
                       
@@ -211,7 +211,7 @@ export default function QuotationPage() {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => loadHistoryAuditTimeline(q.quotation_no)}
-                            className="text-xs text-gray-500 hover:text-blue-600 font-medium transition"
+                            className="text-xs text-muted-foreground hover:text-blue-600 font-medium transition"
                             title="Revision History"
                           >
                             📜 History
@@ -241,7 +241,7 @@ export default function QuotationPage() {
           </div>
 
           {/* Table Footer */}
-          <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/50 text-xs text-gray-400">
+          <div className="px-4 py-3 border-t border-gray-100 bg-muted/50 text-xs text-gray-400">
             Showing {quotations.length} of {totalCount} quotations
           </div>
         </div>
@@ -249,14 +249,14 @@ export default function QuotationPage() {
         {/* History Timeline Modal */}
         {historyTimeline.length > 0 && (
           <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[80vh] overflow-y-auto">
+            <div className="bg-card rounded-2xl shadow-2xl w-full max-w-3xl max-h-[80vh] overflow-y-auto">
               {/* Modal Header */}
-              <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4 sticky top-0 bg-white rounded-t-2xl z-10">
+              <div className="flex justify-between items-center border-b  border-border px-6 py-4 sticky top-0 bg-card rounded-t-2xl z-10">
                 <div>
-                  <h4 className="font-bold text-gray-900 text-lg">
+                  <h4 className="font-bold text-foreground text-lg">
                     Revision History
                   </h4>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {historyTimeline[0]?.quotation_no}
                   </p>
                 </div>
@@ -291,7 +291,7 @@ export default function QuotationPage() {
                           className={`p-4 rounded-xl border ${
                             h.is_active
                               ? "bg-green-50/50 border-green-200"
-                              : "bg-gray-50 border-gray-200"
+                              : "bg-muted  border-border"
                           }`}
                         >
                           <div className="flex justify-between items-start">
@@ -300,7 +300,7 @@ export default function QuotationPage() {
                                 Revision R{h.revision_no}
                               </span>
                               <span className="text-gray-400 mx-2">|</span>
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-muted-foreground">
                                 {new Date(h.updated_at).toLocaleString("en-IN", {
                                   day: "numeric",
                                   month: "short",
@@ -314,7 +314,7 @@ export default function QuotationPage() {
                               className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                 h.is_active
                                   ? "bg-green-100 text-green-700"
-                                  : "bg-gray-100 text-gray-500"
+                                  : "bg-gray-100 text-muted-foreground"
                               }`}
                             >
                               {h.is_active ? "ACTIVE" : "SUPERSEDED"}
@@ -342,7 +342,7 @@ export default function QuotationPage() {
 
       {/* Print Output - Shown only during print */}
       {activePrintPayload && (
-        <div className="hidden print:block bg-white">
+        <div className="hidden print:block bg-card">
           <QuotationPrint {...activePrintPayload} />
         </div>
       )}

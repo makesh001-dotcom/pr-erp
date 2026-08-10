@@ -1,11 +1,6 @@
 import axios from "axios";
 
-// ================================
-// Purchase CRUD
-// ================================
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
+import API from "../api/client";
 
 
 export const getPurchases = (params = {}) =>

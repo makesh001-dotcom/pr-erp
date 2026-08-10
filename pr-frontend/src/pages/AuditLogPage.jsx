@@ -80,8 +80,8 @@ export default function AuditLogPage() {
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Audit Logs</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-bold text-foreground">Audit Logs</h1>
+        <p className="text-sm text-muted-foreground mt-1">
           Track all system activities and changes
         </p>
       </div>
@@ -89,33 +89,33 @@ export default function AuditLogPage() {
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <p className="text-2xl font-bold text-gray-900">{stats.total_today}</p>
-            <p className="text-xs text-gray-500">Actions Today</p>
+          <div className="bg-card rounded-xl border  border-border p-4">
+            <p className="text-2xl font-bold text-foreground">{stats.total_today}</p>
+            <p className="text-xs text-muted-foreground">Actions Today</p>
           </div>
           {stats.by_action?.slice(0, 3).map((a) => (
-            <div key={a.action} className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-2xl font-bold text-gray-900">{a.count}</p>
-              <p className="text-xs text-gray-500">{a.action}</p>
+            <div key={a.action} className="bg-card rounded-xl border  border-border p-4">
+              <p className="text-2xl font-bold text-foreground">{a.count}</p>
+              <p className="text-xs text-muted-foreground">{a.action}</p>
             </div>
           ))}
         </div>
       )}
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <div className="bg-card rounded-xl border  border-border p-4">
         <div className="flex flex-wrap gap-3">
           <input
             type="text"
             placeholder="Search logs..."
             value={filters.search}
             onChange={(e) => { setFilters({ ...filters, search: e.target.value }); setPage(1); }}
-            className="w-48 px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-blue-400"
+            className="w-48 px-3 py-2 border  border-border rounded-lg text-sm outline-none focus:border-blue-400"
           />
           <select
             value={filters.action}
             onChange={(e) => { setFilters({ ...filters, action: e.target.value }); setPage(1); }}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+            className="px-3 py-2 border  border-border rounded-lg text-sm"
           >
             <option value="">All Actions</option>
             <option value="CREATE">CREATE</option>
@@ -127,7 +127,7 @@ export default function AuditLogPage() {
           <select
             value={filters.module}
             onChange={(e) => { setFilters({ ...filters, module: e.target.value }); setPage(1); }}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+            className="px-3 py-2 border  border-border rounded-lg text-sm"
           >
             <option value="">All Modules</option>
             <option value="PURCHASE">Purchase</option>
@@ -139,7 +139,7 @@ export default function AuditLogPage() {
           </select>
           <button
             onClick={() => { setFilters({ action: "", module: "", search: "" }); setPage(1); }}
-            className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
+            className="px-3 py-2 text-sm text-muted-foreground hover:text-gray-700"
           >
             Clear
           </button>
@@ -147,11 +147,11 @@ export default function AuditLogPage() {
       </div>
 
       {/* Logs Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border  border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-muted border-b text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 <th className="px-4 py-3 w-40">Date/Time</th>
                 <th className="px-4 py-3">User</th>
                 <th className="px-4 py-3">Action</th>
@@ -174,8 +174,8 @@ export default function AuditLogPage() {
                 </tr>
               ) : (
                 logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-50/50">
-                    <td className="px-4 py-3 text-xs text-gray-500">
+                  <tr key={log.id} className="hover:bg-muted/50">
+                    <td className="px-4 py-3 text-xs text-muted-foreground">
                       {new Date(log.created_at).toLocaleString("en-IN", {
                         day: "2-digit",
                         month: "short",
@@ -213,7 +213,7 @@ export default function AuditLogPage() {
         <div className="flex justify-center gap-2">
           <button disabled={page === 1} onClick={() => setPage(page - 1)}
             className="px-3 py-1 border rounded text-sm disabled:opacity-30">← Prev</button>
-          <span className="px-3 py-1 text-sm text-gray-500">Page {page} of {totalPages}</span>
+          <span className="px-3 py-1 text-sm text-muted-foreground">Page {page} of {totalPages}</span>
           <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}
             className="px-3 py-1 border rounded text-sm disabled:opacity-30">Next →</button>
         </div>

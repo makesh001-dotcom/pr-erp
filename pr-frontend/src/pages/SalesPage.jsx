@@ -71,11 +71,11 @@ export default function SalesPage() {
       </div>
 
       {/* Sales List Table */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border overflow-hidden">
         {loading ? (
-          <p className="text-center py-8 text-gray-500">Loading sales...</p>
+          <p className="text-center py-8 text-muted-foreground">Loading sales...</p>
         ) : sales.length === 0 ? (
-          <p className="text-center py-8 text-gray-500">
+          <p className="text-center py-8 text-muted-foreground">
             No sales yet. Click "+ New Sale" to create one.
           </p>
         ) : (
@@ -96,7 +96,7 @@ export default function SalesPage() {
               {sales.map((s) => (
                 <tr
                   key={s.id}
-                  className="hover:bg-gray-50 cursor-pointer"
+                  className="hover:bg-muted cursor-pointer"
                   onClick={() => s.status === "DRAFT" && handleEdit(s.id)}
                 >
                   <td className="p-3 font-medium">{s.sales_no}</td>
@@ -111,7 +111,7 @@ export default function SalesPage() {
                   </td>
                   <td className="p-3 text-right font-medium">₹{s.grand_total}</td>
                   <td className="p-3 text-center">{s.items?.length || 0}</td>
-                  <td className="p-3 text-xs text-gray-500">
+                  <td className="p-3 text-xs text-muted-foreground">
                     {new Date(s.created_at).toLocaleDateString()}
                   </td>
                   <td className="p-3 text-center">
