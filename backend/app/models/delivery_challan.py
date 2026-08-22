@@ -85,7 +85,9 @@ class DeliveryChallan(Base):
     expected_return_date = Column(Date, nullable=True)
     is_returned = Column(Boolean, default=False, nullable=False)
     returned_at = Column(DateTime(timezone=True), nullable=True)
-
+    # models/delivery_challan.py — DeliveryChallan class
+    via = Column(String(100), nullable=True)
+    destination = Column(String(100), nullable=True)
     remarks = Column(Text, nullable=True)
 
     # Timestamps

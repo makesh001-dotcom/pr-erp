@@ -157,6 +157,8 @@ def create_delivery_challan(
             remarks=challan_data.remarks,
             is_active=True,
             display_type=challan_data.display_type,
+            via=challan_data.via,                    # ⬅ ADD
+            destination=challan_data.destination,     # ⬅ ADD
         )
 
         db.add(challan)
@@ -311,6 +313,13 @@ def update_delivery_challan(
 
         if challan_data.display_type is not None:
             challan.display_type = challan_data.display_type
+
+                
+        if challan_data.via is not None:               # ⬅ ADD
+            challan.via = challan_data.via
+
+        if challan_data.destination is not None:        # ⬅ ADD
+            challan.destination = challan_data.destination
 
         if challan_data.items is not None:
             db.query(DeliveryChallanItem).filter(

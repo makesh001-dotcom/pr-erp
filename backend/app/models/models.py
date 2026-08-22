@@ -46,6 +46,7 @@ class Model(Base):
     hsn_code: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
     type: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
     
+    
     product_group_id: Mapped[int] = mapped_column(ForeignKey("product_group.id"))
     product_group: Mapped["ProductGroup"] = relationship(back_populates="models")
     

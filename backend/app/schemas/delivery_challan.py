@@ -4,7 +4,12 @@ from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 from app.models.delivery_challan import DeliveryStatus, DCType
-
+from app.schemas.client import ClientResponse
+from app.schemas.model import ModelResponse
+from app.schemas.client import ClientResponse
+from app.schemas.model import ModelResponse
+from app.schemas.client import ClientResponse
+from app.schemas.model import ModelResponse
 
 # ============================================
 # ITEM SCHEMAS
@@ -18,6 +23,8 @@ class DeliveryChallanItemBase(BaseModel):
     quantity_returned: float = Field(default=0, ge=0)
     unit_price: Optional[float] = Field(default=None, ge=0)
     remarks: Optional[str] = None
+    via: Optional[str] = None            # ⬅ ADD
+    destination: Optional[str] = None    # ⬅ ADD
 
 
 class DeliveryChallanItemCreate(DeliveryChallanItemBase):
@@ -38,7 +45,7 @@ class DeliveryChallanItemUpdate(BaseModel):
 class DeliveryChallanItemResponse(DeliveryChallanItemBase):
     id: int
     quantity_pending: float
-    
+    model: Optional[ModelResponse]
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -54,6 +61,8 @@ class DeliveryChallanBase(BaseModel):
     expected_return_date: Optional[date] = None
     remarks: Optional[str] = None
     display_type: Optional[str] = None
+    via: Optional[str] = None            # ⬅ ADD
+    destination: Optional[str] = None    # ⬅ ADD
 
 
 class DeliveryChallanCreate(DeliveryChallanBase):
@@ -70,6 +79,8 @@ class DeliveryChallanUpdate(BaseModel):
     status: Optional[DeliveryStatus] = None
     items: Optional[List[DeliveryChallanItemUpdate]] = None
     display_type: Optional[str] = None
+    via: Optional[str] = None            # ⬅ ADD
+    destination: Optional[str] = None    # ⬅ ADD
 
 # ============================================
 # RESPONSE SCHEMAS
@@ -80,7 +91,7 @@ class DeliveryChallanResponse(DeliveryChallanBase):
     challan_no: str
     revision_no: int
     status: DeliveryStatus
-    
+    client: Optional[ClientResponse] = None 
     # Return tracking
     is_returned: bool
     returned_at: Optional[datetime] = None

@@ -1,79 +1,49 @@
-import requests
-# Make sure BOTH are imported so SQLAlchemy registers them
-from app.models.models import Model 
-from app.models.purchase import PurchaseItem  # <-- Adjust this path to wherever PurchaseItem lives
-BASE_URL = "http://127.0.0.1:8002/api/v1"
+import pandas as pd
+import re
 
-def test_create_draft():
-    print("\n📝 TEST: Create DRAFT Purchase")
-    payload = {
-        "supplier_id": 1,
-        "supplier_invoice_no": "INV-TEST-001",
-        "purchase_type": "NORMAL_PURCHASE",
-        "payment_status": "UNPAID",
-        "items": [
-            {
-                "model_id": 1,
-                "model_no": "IGNORED",
-                "quantity": 2,
-                "unit_cost": 1500.00,
-                "serial_numbers": [
-                    {"serial_number": "AUTO-TEST-001"},
-                    {"serial_number": "AUTO-TEST-002"}
-                ]
-            }
-        ]
-    }
-    r = requests.post(f"{BASE_URL}/purchases/", json=payload)
-    print(f"Status: {r.status_code}")
-    print(f"Response: {r.json().get('status')}, ID: {r.json().get('id')}")
-    return r.json().get('id')
+file_path = "stock-26-27-new-07-07-26 - Copy (3).xlsx"  # Replace with your actual file path
+column_name = "Product Name"
 
-def test_get_purchase(purchase_id):
-    print(f"\n📝 TEST: Get Purchase {purchase_id}")
-    r = requests.get(f"{BASE_URL}/purchases/{purchase_id}")
-    print(f"Status: {r.status_code}")
-    print(f"Status: {r.json().get('status')}")
+# Read sheet without header to locate where data begins
+raw_df = pd.read_excel(file_path, header=None)
 
-def test_post_purchase(purchase_id):
-    print(f"\n📝 TEST: Post Purchase {purchase_id}")
-    r = requests.post(f"{BASE_URL}/purchases/{purchase_id}/post")
-    print(f"Status: {r.status_code}")
-    print(f"New Status: {r.json().get('status')}")
+# Find row containing 'Product Name'
+header_row_idx = None
+for idx, row in raw_df.iterrows():
+    row_values = row.astype(str).str.strip().str.lower().values
+    if column_name.lower() in row_values:
+        header_row_idx = idx
+        break
 
-def test_update_posted(purchase_id):
-    print(f"\n📝 TEST: Update POSTED Purchase (Should Fail)")
-    r = requests.put(f"{BASE_URL}/purchases/{purchase_id}", json={"remarks": "test"})
-    print(f"Status: {r.status_code}")
-    print(f"Detail: {r.json().get('detail')}")
-
-def test_validation():
-    print(f"\n📝 TEST: Validation - Empty Items")
-    r = requests.post(f"{BASE_URL}/purchases/", json={
-        "supplier_id": 1,
-        "purchase_type": "NORMAL_PURCHASE",
-        "items": []
-    })
-    print(f"Status: {r.status_code}")
-    print(f"Detail: {r.json().get('detail')}")
-
-if __name__ == "__main__":
-    print("🚀 STARTING PURCHASE MODULE TESTS")
+if header_row_idx is not None:
+    df = pd.read_excel(file_path, header=header_row_idx)
+    df.columns = df.columns.astype(str).str.strip()
     
-    # Test validation
-    test_validation()
-    
-    # Test create
-    purchase_id = test_create_draft()
-    
-    if purchase_id:
-        # Test get
-        test_get_purchase(purchase_id)
+    # Drop empty rows in the product name column
+    df = df.dropna(subset=[column_name]).copy()
+
+    # REGEX NORMALIZATION:
+    # 1. Convert to lower case
+    # 2. Strip out hyphens (-), periods (.), underscores (_), and spaces
+    df['clean_name'] = (
+        df[column_name]
+        .astype(str)
+        .str.lower()
+        .str.replace(r'[\.\-\_\s]+', '', regex=True)
+    )
+
+    # Keep all occurrences of names that share the same normalized key
+    duplicate_rows = df[df.duplicated(subset=['clean_name'], keep=False)]
+
+    if not duplicate_rows.empty:
+        print(f"Header found on row {header_row_idx + 1}!\n")
+        print("Duplicate Matches Found (grouped by similarity):\n")
         
-        # Test post
-        test_post_purchase(purchase_id)
-        
-        # Test update posted (should fail)
-        test_update_posted(purchase_id)
-    
-    print("\n✅ TESTS COMPLETE")
+        # Group duplicates together to show variations (e.g., Item-A vs Item.A)
+        grouped = duplicate_rows.groupby('clean_name')[column_name].unique()
+        for clean, variations in grouped.items():
+            print(f"Group: {list(variations)}")
+    else:
+        print("No duplicate product names found.")
+else:
+    print(f"Could not find '{column_name}' in any row of the sheet.")
