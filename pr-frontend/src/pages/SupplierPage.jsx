@@ -20,6 +20,34 @@ export default function SupplierPage() {
   // State for controlling the printable parcel box label view
   const [printModalOpen, setPrintModalOpen] = useState(false);
   const [printData, setPrintData] = useState(null);
+  /**
+ * Extracts a readable message from FastAPI errors.
+ */
+function getErrorMessage(error) {
+  if (!error.response) {
+    return error.message || "Network error. Please check your connection.";
+  }
+
+  const data = error.response.data;
+
+  // Handles FastAPI 422 Validation Errors (array of field errors)
+  if (Array.isArray(data?.detail)) {
+    return data.detail
+      .map((err) => {
+        // e.g., "alternate_email: value is not a valid email address"
+        const field = err.loc ? err.loc[err.loc.length - 1] : "Field";
+        return `${field}: ${err.msg}`;
+      })
+      .join("\n");
+  }
+
+  // Handles custom FastAPI 400/404 errors (e.g., HTTPException(detail="..."))
+  if (typeof data?.detail === "string") {
+    return data.detail;
+  }
+
+  return "An unexpected error occurred.";
+}
 
   const fetchSuppliers = async () => {
     try {

@@ -1,4 +1,5 @@
 // src/components/delivery/DeliveryFormModal.jsx
+// src/components/delivery/DeliveryFormModal.jsx
 
 import React, { useState, useEffect, useRef } from "react";
 import API from "../api/client";
@@ -48,6 +49,52 @@ export default function DeliveryFormModal({ isOpen, onClose, initialData, onSave
   const clientDropdownRef = useRef(null);
 
   // ================================
+// POPULATE FORM WITH INITIAL DATA
+// ================================
+const populateInitialData = (data, clientsList, modelsList) => {
+  console.log("📝 Populating form with data:", data);
+
+  let client = data.client || null;
+
+  if (!client && data.client_id) {
+    client = clientsList.find(c => c.id === parseInt(data.client_id));
+  }
+
+  if (client && !client.address && data.client_id) {
+    const fullClient = clientsList.find(c => c.id === parseInt(data.client_id));
+    if (fullClient) client = fullClient;
+  }
+
+  setSelectedClient(client || null);
+  setClientSearch(client?.company_name || data.client?.company_name || "");
+
+  setDcType(data.dc_type || data.challan_type || "WITHOUT_BILL_OUTWARD");
+  setOrderNo(data.order_no || data.reference_no || "");
+  setVia(data.via || "Direct");
+  setDestination(data.destination || client?.state || "");
+  setDeliveryDate(data.delivery_date?.split("T")[0] || new Date().toISOString().split("T")[0]);
+  setExpectedReturnDate(data.expected_return_date || "");
+  setRemarks(data.remarks || "");
+  setDisplayType(data.display_type || "");
+
+  const mappedLines = (data.items || []).map((item) => {
+    const fullModel = modelsList.find(m => m.id === parseInt(item.model_id));
+    return {
+      id: item.id || Date.now() + Math.random(),
+      model_id: item.model_id,
+      model_no: item.model?.model_no || fullModel?.model_no || "",
+      description: item.description || fullModel?.description || "",
+      hsn_code: item.hsn_code || fullModel?.hsn_code || "",
+      quantity_sent: item.quantity_sent || item.quantity_delivered || item.quantity || 1,
+      quantity_returned: item.quantity_returned || 0,
+      model: item.model || fullModel || null,
+    };
+  });
+
+  setLineItems(mappedLines);
+  console.log("✅ Form populated with items:", mappedLines.length);
+};
+  // ================================
   // FETCH DATA
   // ================================
   useEffect(() => {
@@ -61,12 +108,14 @@ export default function DeliveryFormModal({ isOpen, onClose, initialData, onSave
           API.get("/models/", { params: { limit: 100 } }),
         ]);
         
-        // Retained robust client array unwrapping from original code
-        setClients(clientRes.data?.items || clientRes.data?.data || clientRes.data || []);
-        setAllModels(modelRes.data?.items || modelRes.data?.data || modelRes.data || []);
+        const clientsData = clientRes.data?.items || clientRes.data?.data || clientRes.data || [];
+        const modelsData = modelRes.data?.items || modelRes.data?.data || modelRes.data || [];
+        console.log("Looking for client_id", initialData?.client_id, "in", clientsData.map(c => c.id));
+        setClients(clientsData);
+        setAllModels(modelsData);
 
         if (initialData) {
-          populateInitialData(initialData);
+          populateInitialData(initialData, clientsData, modelsData); // ⬅ use local vars, not state
         }
       } catch (err) {
         console.error("Failed to load form data:", err);
@@ -75,7 +124,18 @@ export default function DeliveryFormModal({ isOpen, onClose, initialData, onSave
       }
     };
     fetchData();
-  }, [isOpen, initialData]);
+  }, [isOpen, initialData]); // ⚠️ Removed initialData from dependencies to prevent re-fetching
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset form when modal closes
+      setSelectedClient(null);
+      setClientSearch("");
+      setLineItems([]);
+      setErrors({});
+    }
+  }, [isOpen]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -94,31 +154,6 @@ export default function DeliveryFormModal({ isOpen, onClose, initialData, onSave
   // ================================
   // HELPERS
   // ================================
-  const populateInitialData = (data) => {
-    setSelectedClient(data.client || null);
-    setClientSearch(data.client?.company_name || "");
-    setDcType(data.dc_type || data.challan_type || "WITHOUT_BILL_OUTWARD");
-    setOrderNo(data.order_no || data.reference_no || "");
-    setVia(data.via || "Direct");
-    setDestination(data.destination || data.client?.state || "");
-    setDeliveryDate(data.delivery_date?.split("T")[0] || new Date().toISOString().split("T")[0]);
-    setExpectedReturnDate(data.expected_return_date || "");
-    setRemarks(data.remarks || "");
-    setDisplayType(data.display_type || "");
-
-    const mappedLines = (data.items || []).map((item) => ({
-      id: item.id || Date.now() + Math.random(),
-      model_id: item.model_id,
-      model_no: item.model?.model_no || "",
-      description: item.description || "",
-      hsn_code: item.hsn_code || "",
-      quantity_sent: item.quantity_sent || item.quantity_delivered || item.quantity || 1,
-      quantity_returned: item.quantity_returned || 0,
-      model: item.model || null,
-    }));
-    setLineItems(mappedLines);
-  };
-
   const addModelToChallan = (targetModel) => {
     if (!targetModel) return;
 
@@ -221,12 +256,15 @@ export default function DeliveryFormModal({ isOpen, onClose, initialData, onSave
     try {
       if (initialData?.id) {
         await API.put(`/api/v1/delivery/${initialData.id}`, payload);
+        console.log("✅ DC updated successfully");
       } else {
         await API.post("/api/v1/delivery/", payload);
+        console.log("✅ DC created successfully");
       }
       onSaveSuccess();
       onClose();
     } catch (err) {
+      console.error("❌ Failed to save DC:", err);
       alert(err.response?.data?.detail || "Failed to save delivery challan.");
     } finally {
       setIsSaving(false);

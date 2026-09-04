@@ -102,33 +102,40 @@ export default function DeliveryChallanPage() {
   };
 
   const handlePrint = (challan) => {
-    const fullClient = clients.find((c) => c.id === challan.client_id);
+  const fullClient = clients.find((c) => c.id === Number(challan.client_id));
 
-    setActivePrintPayload({
-      challan,
-      selectedClient: {
-        ...fullClient,
-        company_name: fullClient?.company_name || challan.client?.company_name || "Client",
-        address: fullClient?.address || challan.client?.address || "",
-        state: fullClient?.state || challan.client?.state || "",
-        pincode: fullClient?.pincode || challan.client?.pincode || "",
-        gstin: fullClient?.gstin || challan.client?.gstin || "",
-      },
-      lineItems: challan.items || [],
-      deliveryDate: challan.delivery_date,
-      displayType: challan.display_type, 
-      challanType: challan.dc_type || challan.challan_type || challan.type || "RETURNABLE",
-      orderNo: challan.reference_no || challan.order_no || "—",
-      via: challan.dispatch_through || challan.via || "Direct",
-      destination: challan.destination || "—",
-      referenceNo: challan.reference_no,
-      remarks: challan.remarks,
-    });
+  const mappedItems = (challan.items || []).map((item) => ({
+    ...item,
+    model_no: item.model_no || item.model?.model_no || "",
+    hsn_code: item.hsn_code || item.model?.hsn_code || "",
+    description: item.description || item.model?.description || "",
+  }));
 
-    setTimeout(() => {
-      window.print();
-    }, 300);
-  };
+  setActivePrintPayload({
+    challan,
+    selectedClient: {
+      ...fullClient,
+      company_name: fullClient?.company_name || challan.client?.company_name || "Client",
+      address: fullClient?.address || challan.client?.address || "",
+      state: fullClient?.state || challan.client?.state || "",
+      pincode: fullClient?.pincode || challan.client?.pincode || "",
+      gstin: fullClient?.gstin || challan.client?.gstin || "",
+    },
+    lineItems: mappedItems,
+    deliveryDate: challan.delivery_date,
+    displayType: challan.display_type,
+    challanType: challan.dc_type || challan.challan_type || challan.type || "RETURNABLE",
+    orderNo: challan.reference_no || challan.order_no || "—",
+    via: challan.via || challan.dispatch_through || "Direct",
+    destination: challan.destination || "—",
+    referenceNo: challan.reference_no,
+    remarks: challan.remarks,
+  });
+
+  setTimeout(() => {
+    window.print();
+  }, 300);
+};
 
   // ================================
   // HELPERS

@@ -1052,10 +1052,10 @@ const handleAddItem = () => {
         <label className="block text-xs font-medium mb-1">Qty</label>
         <input
           type="number"
-          min="1"
+          min="0"
           value={newItem.quantity}
           onChange={(e) =>
-            setNewItem({ ...newItem, quantity: parseInt(e.target.value) || 0})
+            setNewItem({ ...newItem, quantity: parseInt(e.target.value) || 0 })
           }
           className="w-full border rounded p-2 text-sm"
           disabled={isProcessing}
