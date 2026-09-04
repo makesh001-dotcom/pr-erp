@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -19,6 +19,12 @@ class Role(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
+    is_system_admin = Column(
+    Boolean,
+    default=False,
+    nullable=False,
+)
+
 
     # Relationships
     users = relationship("User", back_populates="role")

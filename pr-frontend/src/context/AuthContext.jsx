@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const response = await API.get("/auth/me", {
+       const response = await API.get("/api/v1/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(response.data);
@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
   }, [loadUser]);
 
   const login = useCallback(async (credentials) => {
-  const response = await API.post("/auth/login", credentials);
+  const response = await API.post("/api/v1/auth/login", credentials);
   const accessToken = response.data.access_token;
   const userProfile = response.data.user; // Grab user data from backend response
 

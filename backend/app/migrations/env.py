@@ -22,6 +22,7 @@ from app.models.purchase import (  # ⭐ ADD THIS IMPORT
     PurchaseItemSerial, 
     PurchaseCounter
 )
+from app.models.user_permission import UserPermission
 from app.models.audit_log import AuditLog
 from app.models.role import Role
 from app.models.permission import Permission
@@ -92,6 +93,8 @@ def run_migrations_online() -> None:
 
         with context.begin_transaction():
             context.run_migrations()
+
+  
 
 
 if context.is_offline_mode():

@@ -26,3 +26,9 @@ class Permission(Base):
         back_populates="permission",
         cascade="all, delete-orphan",
     )
+
+    user_permissions = relationship(
+    "UserPermission",
+    back_populates="permission",
+    cascade="all, delete-orphan",
+    )

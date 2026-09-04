@@ -4,7 +4,11 @@ from app.db.session import SessionLocal
 from app.models.role import Role
 from app.models.permission import Permission
 from app.models.role_permission import RolePermission
-import app.db.base
+
+# Add this near the top of seed_rbac.py
+from app.db.base import Base  
+
+from app.models.delivery_challan import DeliveryChallan
 
 from app.core.permission_registry import (
     PERMISSION_REGISTRY,
@@ -55,9 +59,16 @@ def assign_permissions_to_role(
 ):
     """
     Assign permissions to a role.
-    Duplicate assignments are ignored.
+    Only adds permissions that do not already exist in the database.
     """
+    # 1. Map target names to their structural DB IDs
+    target_permission_ids = {
+        permission_lookup[name].id
+        for name in permission_names
+        if name in permission_lookup
+    }
 
+    # 2. Get what this specific role currently has in the DB
     existing_permission_ids = {
         rp.permission_id
         for rp in db.query(RolePermission)
@@ -65,21 +76,20 @@ def assign_permissions_to_role(
         .all()
     }
 
-    for permission_name in permission_names:
+    # 3. Calculate missing IDs using set differences
+    ids_to_add = target_permission_ids - existing_permission_ids
 
-        permission = permission_lookup[permission_name]
-
-        if permission.id in existing_permission_ids:
-            continue
-
+    # 4. Insert only the fresh delta records
+    for perm_id in ids_to_add:
         db.add(
             RolePermission(
                 role_id=role.id,
-                permission_id=permission.id,
+                permission_id=perm_id,
             )
         )
 
     db.commit()
+
 
 
 def seed_rbac():
@@ -92,13 +102,13 @@ def seed_rbac():
 
         admin = (
             db.query(Role)
-            .filter(Role.name == "Admin")
+            .filter(Role.name == "admin")
             .first()
         )
 
         staff = (
             db.query(Role)
-            .filter(Role.name == "Staff")
+            .filter(Role.name == "staff")
             .first()
         )
 
