@@ -135,7 +135,7 @@ export default function PurchaseFormModal({
   // Add Item Form
   const [newItem, setNewItem] = useState({
     model_id: "",
-    quantity: 1,
+    quantity: 0,
     unit_cost: 0,
     remarks: "",
     return_due_date: "",
@@ -368,7 +368,7 @@ const handleAddItem = () => {
         showNotice("success", `Merged with existing. New quantity: ${newQty}`);
         setNewItem((prev) => ({
             ...prev,
-            quantity: 1,
+            quantity: 0,
             unit_cost: 0,
             remarks: "",
             serial_numbers: [],
@@ -396,7 +396,7 @@ const handleAddItem = () => {
     // Reset form
     setNewItem((prev) => ({
         ...prev,
-        quantity: 1,
+        quantity: 0,
         unit_cost: 0,
         remarks: "",
         serial_numbers: [],
@@ -1055,7 +1055,7 @@ const handleAddItem = () => {
           min="1"
           value={newItem.quantity}
           onChange={(e) =>
-            setNewItem({ ...newItem, quantity: parseInt(e.target.value) || 1 })
+            setNewItem({ ...newItem, quantity: parseInt(e.target.value) || 0})
           }
           className="w-full border rounded p-2 text-sm"
           disabled={isProcessing}

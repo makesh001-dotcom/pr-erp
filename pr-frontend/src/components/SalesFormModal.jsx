@@ -125,7 +125,7 @@ export default function SalesFormModal({
   // Add Item Form
   const [newItem, setNewItem] = useState({
     model_id: "",
-    quantity: 1,
+    quantity: 0,
     unit_price: 0,
     remarks: "",
     serial_numbers: [],
@@ -299,7 +299,7 @@ export default function SalesFormModal({
       const newQty = items[existingIndex].quantity + newItem.quantity;
       handleItemChange(existingIndex, "quantity", newQty);
       showNotice("success", `Merged with existing. New quantity: ${newQty}`);
-      setNewItem((prev) => ({ ...prev, quantity: 1, unit_price: 0, remarks: "", serial_numbers: [] }));
+      setNewItem((prev) => ({ ...prev, quantity: 0, unit_price: 0, remarks: "", serial_numbers: [] }));
       return;
     }
 
@@ -323,7 +323,7 @@ export default function SalesFormModal({
       },
     ]);
 
-    setNewItem((prev) => ({ ...prev, quantity: 1, unit_price: 0, remarks: "", serial_numbers: [] }));
+    setNewItem((prev) => ({ ...prev, quantity: 0, unit_price: 0, remarks: "", serial_numbers: [] }));
     setErrors({});
     markDirty();
   };
@@ -840,7 +840,7 @@ const handleModelSelect = (modelId) => {
           type="number"
           min="1"
           value={newItem.quantity}
-          onChange={(e) => setNewItem({ ...newItem, quantity: parseInt(e.target.value) || 1 })}
+          onChange={(e) => setNewItem({ ...newItem, quantity: parseInt(e.target.value) || 0 })}
           className="w-full border rounded p-2 text-sm"
           disabled={isProcessing}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddItem(); } }}

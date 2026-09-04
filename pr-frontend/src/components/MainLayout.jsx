@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; // 1. Added useState
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from "../assets/logo.jpeg";
 
@@ -12,6 +12,9 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const { user, logout, hasPermission } = useAuth();
   const { theme } = useTheme();
+  
+  // 2. State to track if mobile sidebar is slide-opened
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
 
@@ -35,15 +38,31 @@ const MainLayout = () => {
   return (
     <div className="flex min-h-screen bg-background print:bg-card">
       
-      {/* SIDEBAR - Uses semantic --sidebar variables */}
-      <aside className="w-64 bg-sidebar text-sidebar-foreground flex flex-col h-screen sticky top-0 print:hidden shadow-xl z-20 border-r border-sidebar-border">
+      {/* MOBILE DARK BACKDROP OVERLAY */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* SIDEBAR - Made highly responsive */}
+      <aside className={`
+        fixed inset-y-0 left-0 w-64 bg-sidebar text-sidebar-foreground flex flex-col h-screen print:hidden shadow-xl z-40 border-r border-sidebar-border transition-transform duration-300 ease-in-out
+        md:sticky md:top-0 md:transform-none md:z-20
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
         
         {/* Branding Header */}
-        <div className="py-5 px-6 flex items-center space-x-3 border-b border-sidebar-border flex-shrink-0">
-          <div className="p-2 bg-sidebar-accent rounded-xl shadow-inner flex-shrink-0">
-            <img src={logo} alt="Logo" className="w-8 h-8 object-contain rounded-md" />
+        <div className="py-5 px-6 flex items-center justify-between border-b border-sidebar-border flex-shrink-0">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-sidebar-accent rounded-xl shadow-inner flex-shrink-0">
+              <img src={logo} alt="Logo" className="w-8 h-8 object-contain rounded-md" />
+            </div>
+            <span className="font-bold text-base tracking-wide uppercase text-sidebar-foreground">PR Automation</span>
           </div>
-          <span className="font-bold text-base tracking-wide uppercase text-sidebar-foreground">PR Automation</span>
+          {/* Close button inside sidebar on mobile */}
+          <button onClick={() => setIsMobileOpen(false)} className="md:hidden text-xl p-1">✕</button>
         </div>
 
         {/* Scrollable Navigation Area */}
@@ -67,6 +86,7 @@ const MainLayout = () => {
                       icon={item.icon}
                       label={item.label}
                       active={isActive(item.path)}
+                      onClick={() => setIsMobileOpen(false)} // Close sidebar when link is clicked on mobile
                     />
                   ))}
                 </div>
@@ -91,19 +111,26 @@ const MainLayout = () => {
       </aside>
 
       {/* MAIN LAYOUT CANVAS */}
-      <div className="flex-1 flex flex-col overflow-hidden print:overflow-visible">
+      <div className="flex-1 flex flex-col overflow-hidden print:overflow-visible w-full">
         
         {/* Global Action Header */}
-        <header className="h-16 bg-card border-b border-border flex items-center justify-between px-8 shadow-sm print:hidden flex-shrink-0">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-lg font-semibold text-foreground capitalize">
+        <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 md:px-8 shadow-sm print:hidden flex-shrink-0">
+          <div className="flex items-center space-x-2 md:space-x-4">
+            {/* 3. MOBILE HAMBURGER BUTTON */}
+            <button 
+              onClick={() => setIsMobileOpen(true)}
+              className="p-2 mr-1 rounded-lg hover:bg-muted text-foreground md:hidden text-xl"
+            >
+              ☰
+            </button>
+            <h2 className="text-sm md:text-lg font-semibold text-foreground capitalize truncate max-w-[150px] md:max-w-none">
               {location.pathname.replace('/', '').replace(/-/g, ' ') || 'Dashboard'}
             </h2>
           </div>
           
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-3 border-l pl-6 border-border">
-              <div className="text-right">
+          <div className="flex items-center space-x-2 md:space-x-6">
+            <div className="flex items-center space-x-2 md:space-x-3 border-l pl-3 md:pl-6 border-border">
+              <div className="text-right hidden sm:block"> {/* Hidden on extremely small screens */}
                 <p className="text-sm font-bold text-foreground leading-tight">
                   {user?.name || 'USER'}
                 </p>
@@ -115,10 +142,10 @@ const MainLayout = () => {
                   {user?.role?.toUpperCase() || 'GUEST'} MODE 
                 </span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold border-2 border-border shadow-md flex-shrink-0">
+              <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold border-2 border-border shadow-md flex-shrink-0">
                 {user?.name ? user.name.substring(0,2).toUpperCase() : 'PR'}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 md:gap-3">
                 <ThemeToggle />
               </div>
             </div>
@@ -126,7 +153,7 @@ const MainLayout = () => {
         </header>
 
         {/* Core Main Render Frame */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-background print:bg-card print:p-0 print:overflow-visible">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 bg-background print:bg-card print:p-0 print:overflow-visible">
           <div className="w-full max-w-7xl mx-auto print:p-0">
             <Outlet />
           </div>
@@ -137,11 +164,12 @@ const MainLayout = () => {
   );
 };
 
-// SidebarLink with semantic colors
-const SidebarLink = ({ to, icon, label, active }) => {
+// SidebarLink with semantic colors and custom click handling
+const SidebarLink = ({ to, icon, label, active, onClick }) => {
   return (
     <Link
       to={to}
+      onClick={onClick}
       className={`w-full flex items-center space-x-3.5 px-4 py-2.5 rounded-xl transition-all duration-150 group text-sm font-medium
         ${active 
           ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-sm font-semibold' 

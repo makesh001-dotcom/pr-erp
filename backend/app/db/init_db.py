@@ -1,42 +1,140 @@
 from sqlalchemy.orm import Session
+
 from app.db.session import engine, SessionLocal, Base
-from app.models.users import User          # Keep only one correct import
+from app.db.base import User, Role
+
 from passlib.context import CryptContext
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+)
+
+
+def get_or_create_role(
+    db: Session,
+    name: str,
+    description: str,
+) -> Role:
+    role = (
+        db.query(Role)
+        .filter(Role.name == name)
+        .first()
+    )
+
+    if role is None:
+        role = Role(
+            name=name,
+            description=description,
+        )
+
+        db.add(role)
+        db.flush()
+
+        print(f"🚀 Role created: {name}")
+
+    else:
+        print(f"Role already exists: {name}")
+
+    return role
 
 
 def init_db() -> None:
-    """Initialize database tables and default admin user."""
-    
-    # Create all tables (safe to run multiple times)
+    """Initialize database tables, roles, and default users."""
+
     Base.metadata.create_all(bind=engine)
 
     db: Session = SessionLocal()
-    
+
     try:
-        # Check if admin already exists
-        admin = db.query(User).filter(User.username == "admin").first()
+        # ==========================================
+        # 1. CREATE ROLES
+        # ==========================================
 
-        if not admin:
-            hashed_password = pwd_context.hash("1234")
+        admin_role = get_or_create_role(
+            db,
+            "admin",
+            "System administrator",
+        )
 
-            new_admin = User(
+        staff_role = get_or_create_role(
+            db,
+            "staff",
+            "Staff user",
+        )
+
+        # ==========================================
+        # 2. CREATE ADMIN USER
+        # ==========================================
+
+        admin = (
+            db.query(User)
+            .filter(User.username == "admin")
+            .first()
+        )
+
+        if admin is None:
+            admin = User(
                 username="admin",
-                password=hashed_password,
-                role="admin",
-                # Add other required fields if any (email, is_active, etc.)
+                password=pwd_context.hash("1234"),
+                role=admin_role,
+                is_active=True,
             )
 
-            db.add(new_admin)
-            db.commit()
-            print(" Admin user created successfully with username: 'admin' and password: '1234'")
+            db.add(admin)
+
+            print(
+                "🚀 Admin user created successfully "
+                "with username: 'admin'"
+            )
+
         else:
             print("Admin user already exists.")
+
+        # ==========================================
+        # 3. CREATE STAFF USER
+        # ==========================================
+
+        staff = (
+            db.query(User)
+            .filter(User.username == "staff")
+            .first()
+        )
+
+        if staff is None:
+            staff = User(
+                username="staff",
+                password=pwd_context.hash("1234"),
+                role=staff_role,
+                is_active=True,
+            )
+
+            db.add(staff)
+
+            print(
+                "👤 Staff user created successfully "
+                "with username: 'staff'"
+            )
+
+        else:
+            print("Staff user already exists.")
+
+        # ==========================================
+        # 4. COMMIT
+        # ==========================================
+
+        db.commit()
+
+        print("=" * 60)
+        print("Database initialized successfully.")
+        print("=" * 60)
 
     except Exception as e:
         db.rollback()
         print(f"❌ Error initializing database: {e}")
+        raise
+
     finally:
         db.close()
 

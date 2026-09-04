@@ -56,7 +56,7 @@ export const navigation = [
   },
   {
     section: "Challans",
-    label: "DELVIERY CHALLAN",
+    label: "Delivery Challan",
     path: "/delivery",
     icon: "📤",
     permission: SALES_VIEW,
